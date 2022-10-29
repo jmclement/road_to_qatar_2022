@@ -31,7 +31,6 @@ def getTeamsRanking():
 
     for ranking in jsonResponse['rankings']:
         team = ranking['rankingItem']
-        #print(team['rank'],team['countryCode'],team['name'],team['totalPoints'],ranking['previousPoints'])
         rows.append([team['rank'],team['countryCode'],team['name'],team['totalPoints'],ranking['previousPoints']])
 
 
@@ -45,9 +44,6 @@ def getTeamsRanking():
 
         write.writerows(rows)
 
-# print(csvFile)
-# print(os.getcwd())
-# print(os.path.dirname(__file__))
 
 if __name__ == '__main__':
     getTeamsRanking()
