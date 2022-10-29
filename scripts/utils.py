@@ -5,6 +5,10 @@ import os
 
 
 def getTeamsRanking():
+    '''
+    Function to connect to FIFA and extract list of Men Team ranking with
+    current and previous points
+    '''
 
     # Path to output csv
     csvFile = os.path.join(os.getcwd(),os.path.dirname(__file__),'../raw_data/teamsranking.csv')
