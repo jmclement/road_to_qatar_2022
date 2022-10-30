@@ -54,5 +54,31 @@ def getTeamsRanking():
         write.writerows(rows)
 
 
+def getKaggleDataSets():
+    '''
+    Function that connects to Kaggle using it's API and download a series of
+    datasets required as data source.
+    Actual datasets are stored in a list that function will loop over and
+    download.
+    '''
+
+    # Import Kaggle package to leverage it's API
+    from kaggle.api.kaggle_api_extended import KaggleApi
+
+    # Initialise API connection and authenticate using environment variables
+    api = KaggleApi()
+    resp = api.authenticate()
+
+    # Datasets list
+    datasets = [
+        'martj42/international-football-results-from-1872-to-2017', # International Matches
+        'abecklas/fifa-world-cup' # World Cup matches
+        ]
+
+    for dataset in datasets:
+        api.dataset_download_files(dataset,path='raw_data')
+
+
 if __name__ == '__main__':
-    getTeamsRanking()
+    # getTeamsRanking()
+    getKaggleDataSets()
