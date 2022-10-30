@@ -2,24 +2,33 @@
 import requests
 import csv
 import os
-
+import re
 
 def getTeamsRanking():
     '''
-    Function to connect to FIFA and extract list of Men Team ranking with
-    current and previous points
+    Function to connect to FIFA website and extract latest list of men's team
+    ranking with current and previous points. The list is then saved to the
+    data folder
     '''
 
     # Path to output csv
-    csvFile = os.path.join(os.getcwd(),os.path.dirname(__file__),'../raw_data/teamsranking.csv')
+    csvFile = os.path.join(os.getcwd(),os.path.dirname(__file__),'data/teamsranking.csv')
 
-    # Store url to scrape
-    url = "https://www.fifa.com/api/ranking-overview?locale=en&dateId=id13792"
+    # Urls used to query the FIFA website
+    initialUrl = "https://www.fifa.com/fifa-world-ranking/men"
+    url = "https://www.fifa.com/api/ranking-overview?locale=en&dateId="
 
     # Set the appropriate headers for request to succeed
     headers = {
         'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36',
     }
+
+    # Inititate the request and get the response to find the latest id
+    response = requests.get(initialUrl, headers=headers)
+    id_ = re.search(b'dates":\[\{"id":"(.*?)"',response.content).group(1).decode('utf-8')
+
+    # Store url to scrape
+    url = url + id_
 
     # Inititate the request and get the response
     response = requests.get(url, headers=headers)
