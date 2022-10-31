@@ -64,6 +64,7 @@ def getKaggleDataSets():
 
     # Import Kaggle package to leverage it's API
     from kaggle.api.kaggle_api_extended import KaggleApi
+    import zipfile
 
     # Initialise API connection and authenticate using environment variables
     api = KaggleApi()
@@ -75,8 +76,12 @@ def getKaggleDataSets():
         'abecklas/fifa-world-cup' # World Cup matches
         ]
 
+    # Loop over all datasets in list, download and extract each to their
+    # corresponding folder
+
     for dataset in datasets:
-        api.dataset_download_files(dataset,path='raw_data')
+        dsName = dataset.split("/")[1]
+        api.dataset_download_files(dataset,path=f'raw_data/{dsName}',unzip=True)
 
 
 if __name__ == '__main__':
