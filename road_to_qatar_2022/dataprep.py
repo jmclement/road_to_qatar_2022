@@ -1,9 +1,10 @@
+from enum import unique
 import os
 import pandas as pd
 
 def prepInternational():
     '''
-    Function that loads the downloaded Internation dataset and merge the two
+    Function that loads the downloaded International dataset and merge the two
     files. Additionally renaming/processing the information by limiting the data
     to teams participating in the 2022 World Cup
     '''
@@ -77,5 +78,27 @@ def prepInternational():
     return final_international_merge_df
 
 
+def prepWorldCupDF():
+    '''
+    Function that loads the downloaded Worldcup matches dataset and merge the three
+    files. Additionally renaming/processing the information.
+    '''
+
+    # Load the three files from downloaded csv
+    worldCupMatches_df = pd.read_csv('raw_data/fifa-world-cup/WorldCupMatches.csv')
+    worldCupPlayers_df = pd.read_csv('raw_data/fifa-world-cup/WorldCupPlayers.csv')
+    worldCups_df = pd.read_csv('raw_data/fifa-world-cup/WorldCups.csv')
+
+    # Cleaning up the worldCupMatches df
+    worldCupMatches_df['Date'] = (pd.to_datetime(worldCupMatches_df['Datetime']))
+    worldCupMatches_df['Date'] = worldCupMatches_df['Date'].dt.date
+    worldCupMatches_df['Date'] = pd.to_datetime(worldCupMatches_df['Date'])
+
+    worldCupDates = (worldCupMatches_df['Date'].unique())
+
+    uniqueWorldCupDates = [str(i)[:10] for i in worldCupDates]
+    print(uniqueWorldCupDates)
+
+
 if __name__ == '__main__':
-    prepInternational()
+    prepWorldCupDF()
