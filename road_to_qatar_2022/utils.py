@@ -126,6 +126,34 @@ def cleanUpCountriesName(df:pd.DataFrame):
 
     return new_df
 
+
+def addingMissingData(df:pd.DataFrame):
+    '''
+    Assumptions are being made regarding the 'missing' countries' data.
+    Countries that don't exist anymore. We've researched and found their
+    highest ranking where possible and adding it to the teamsranking dataframe.
+    '''
+
+    '''
+    19,,Serbia and Montenegro,674,674
+    6,,Yugoslavia,64,64
+    64,,Czechoslovakia,24,24
+    45,,German DR,,
+    '''
+
+    data = {
+        'rank':[19,6,64,45],
+        'countryCode':['','','',''],
+        'countryName':['Serbia and Montenegro','Yugoslavia','Czechoslovakia','German DR'],
+        'totalPoints':[674,64,24,0],
+        'previousPoints':[674,64,24,0],
+    }
+
+    df_additional = pd.DataFrame(data)
+
+    result = pd.concat([df,df_additional])
+    return result
+
 if __name__ == '__main__':
     getTeamsRanking()
     getKaggleDataSets()
