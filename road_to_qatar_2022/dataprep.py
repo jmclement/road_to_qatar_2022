@@ -111,6 +111,7 @@ def prepWorldCupDF():
     # Merging World Cup matches with Non World Cup Internation matches
     # mergedWorlCupMatches_df = worldCupMatches_df.merge(nonWorldCupInternationalMatches, left_on='Date', right_on='date', how='outer')
 
+    # Filter WorldCup matches
     filtered_WorldCupMatches_df = worldCupMatches_df[worldCupMatches_df[[
         'Date',
         'Home Team Name',
@@ -127,6 +128,7 @@ def prepWorldCupDF():
         'Away Team Goals',
         'Win conditions']]
 
+    # Renaming the columns
     finalWorldCupMatches_df.rename(columns={"Date": "date",
                     "Home Team Name": "home_team",
                     "Away Team Name": "away_team",
@@ -134,11 +136,11 @@ def prepWorldCupDF():
                     "Away Team Goals": "away_score",
                     "Win conditions": "win_conditions"}, inplace=True)
 
+    # Merging the WorldCup matches with the non WorldCup international matches
     frames = [finalWorldCupMatches_df,nonWorldCupInternationalMatches]
-
     mergedWorldCupMatches_df = pd.concat(frames)
 
-    print(mergedWorldCupMatches_df)
+    return mergedWorldCupMatches_df
 
 
 if __name__ == '__main__':
