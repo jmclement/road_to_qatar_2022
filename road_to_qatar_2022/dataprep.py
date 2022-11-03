@@ -159,8 +159,31 @@ def prepDataEng():
 
     teamsRanking_DF = pd.read_csv(os.path.join(src_data.__path__[0],'teamsranking.csv'))
 
-    print(worldCup_DF.info())
-    print(teamsRanking_DF.info())
+    teamsRanking_DF = cleanUpCountriesName(teamsRanking_DF)
+
+    fullMerge_DF = worldCup_DF.merge(teamsRanking_DF,
+                                     left_on='home_team',
+                                     right_on='countryName',
+                                     how='left').merge(teamsRanking_DF,
+                                                       left_on='away_team',
+                                                       right_on='countryName',
+                                                       how='left',
+                                                       suffixes=('_home','_away'))
+    fullMerge_DF.rename(columns={
+        'rank_home': 'home_team_rank',
+        'totalPoints_home': 'home_team_points',
+        'previousPoints_home': 'home_team_previous_points',
+        'rank_away': 'away_team_rank',
+        'totalPoints_away': 'away_team_points',
+        'previousPoints_away': 'away_team_previous_points',
+    },inplace=True)
+
+    fullMerge_DF.drop(['countryCode_home',
+                       'countryName_home',
+                       'countryCode_away',
+                       'countryName_away'],axis=1,inplace=True)
+
+    fullMerge_DF.to_csv(os.path.join(src_data.__path__[0],'fulldataset.csv'),index=False,header=True)
 
 
 
