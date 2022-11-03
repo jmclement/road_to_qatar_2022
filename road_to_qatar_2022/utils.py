@@ -3,6 +3,7 @@ import requests
 import csv
 import os
 import re
+import pandas as pd
 
 def getTeamsRanking():
     '''
@@ -84,6 +85,47 @@ def getKaggleDataSets():
         api.dataset_download_files(dataset,path=f'raw_data/{dsName}',unzip=True)
 
 
+def cleanUpCountriesName(df:pd.DataFrame):
+    '''
+    Function that takes a dataframe as input and cleans up the series
+    looking for specific values found in countries dictionary below and
+    replacing them with corresponding values.
+
+    Allows for standardising the naming of different countries
+
+    Arguments:
+        df: Pandas Dataframe
+    Returns:
+        Cleaned dataframe
+    '''
+    countries = {
+        "Côte d'Ivoire": "Ivory Coast",
+        "C�te d'Ivoire": "Ivory Coast",
+        "United States": "USA",
+        'rn">Republic of Ireland':"Republic of Ireland",
+        'rn">United Arab Emirates':"United Arab Emirates",
+        'rn">Trinidad and Tobago':"Trinidad and Tobago",
+        'rn">Serbia and Montenegro':"Serbia and Montenegro",
+        'rn">Bosnia and Herzegovina':"Bosnia and Herzegovina",
+        'IR Iran':"Iran",
+        'DR Congo': "Congo DR",
+        'Türkiye':"Turkey",
+        'Zaire': "Congo DR",
+        'North Korea':'Korea DPR',
+        'South Korea':'Korea Republic',
+        'Soviet Union': "Russia",
+        'Vietnam Republic':"Vietnam",
+        'Czech Republic':'Czechia',
+        'Dutch East Indies':'Indonesia',
+        'Germany FR':'Germany',
+        'Martinique':'France'
+    }
+
+    new_df = pd.DataFrame(df)
+    new_df.replace(to_replace=countries,inplace=True)
+
+    return new_df
+
 if __name__ == '__main__':
-    # getTeamsRanking()
+    getTeamsRanking()
     getKaggleDataSets()
