@@ -1,6 +1,6 @@
 import os
 import pandas as pd
-from road_to_qatar_2022.utils import getTeamsRanking,cleanUpCountriesName
+from road_to_qatar_2022.utils import getTeamsRanking,cleanUpCountriesName,addingMissingData
 import road_to_qatar_2022.data as src_data
 
 def prepInternational():
@@ -152,15 +152,20 @@ def prepDataEng():
     Function to combine data from the teams ranking dataset with the final
     output dataframe from prepWorldCupDF
     '''
+
+    # Get world cup dataframe from prepWorldCupDF
     worldCup_DF = prepWorldCupDF()
 
+    # Check if teamsranking data is present, else download it
     if not os.path.exists(os.path.join(src_data.__path__[0],'teamsranking.csv')):
         getTeamsRanking()
 
+    # Process the data, adding missing countries and cleaning up the names
     teamsRanking_DF = pd.read_csv(os.path.join(src_data.__path__[0],'teamsranking.csv'))
-
+    teamsRanking_DF = addingMissingData(teamsRanking_DF)
     teamsRanking_DF = cleanUpCountriesName(teamsRanking_DF)
 
+    # Merge the two datasets
     fullMerge_DF = worldCup_DF.merge(teamsRanking_DF,
                                      left_on='home_team',
                                      right_on='countryName',
@@ -169,6 +174,7 @@ def prepDataEng():
                                                        right_on='countryName',
                                                        how='left',
                                                        suffixes=('_home','_away'))
+    # Rename the columns in the dataset
     fullMerge_DF.rename(columns={
         'rank_home': 'home_team_rank',
         'totalPoints_home': 'home_team_points',
@@ -178,11 +184,13 @@ def prepDataEng():
         'previousPoints_away': 'away_team_previous_points',
     },inplace=True)
 
+    # Drop unused columns
     fullMerge_DF.drop(['countryCode_home',
                        'countryName_home',
                        'countryCode_away',
                        'countryName_away'],axis=1,inplace=True)
 
+    # Save to csv
     fullMerge_DF.to_csv(os.path.join(src_data.__path__[0],'fulldataset.csv'),index=False,header=True)
 
 
