@@ -1,6 +1,7 @@
-from enum import unique
 import os
 import pandas as pd
+from road_to_qatar_2022.utils import getTeamsRanking
+import road_to_qatar_2022.data as src_data
 
 def prepInternational():
     '''
@@ -143,5 +144,22 @@ def prepWorldCupDF():
     return mergedWorldCupMatches_df
 
 
+def prepDataEng():
+    '''
+    Function to combine data from the teams ranking dataset with the final
+    output dataframe from prepWorldCupDF
+    '''
+    worldCup_DF = prepWorldCupDF()
+
+    if not os.path.exists(os.path.join(src_data.__path__[0],'teamsranking.csv')):
+        getTeamsRanking()
+
+    teamsRanking_DF = pd.read_csv(os.path.join(src_data.__path__[0],'teamsranking.csv'))
+
+    print(worldCup_DF.info())
+    print(teamsRanking_DF.info())
+
+
+
 if __name__ == '__main__':
-    prepWorldCupDF()
+    prepDataEng()
