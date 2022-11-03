@@ -94,10 +94,51 @@ def prepWorldCupDF():
     worldCupMatches_df['Date'] = worldCupMatches_df['Date'].dt.date
     worldCupMatches_df['Date'] = pd.to_datetime(worldCupMatches_df['Date'])
 
+    # Find the dates for World Cup matches only
     worldCupDates = (worldCupMatches_df['Date'].unique())
 
+    # Filter down to get unique World Cup matches dates
     uniqueWorldCupDates = [str(i)[:10] for i in worldCupDates]
-    print(uniqueWorldCupDates)
+
+    # Call to prepInternational to get the Internation matches dataframe
+    finalInternational_df = prepInternational()
+
+    # From the international matches filter to obtain only matches that were not
+    # worldcup games and settings appropriate date format
+    nonWorldCupInternationalMatches = finalInternational_df[~finalInternational_df['date'].isin(uniqueWorldCupDates)]
+    nonWorldCupInternationalMatches['date'] = pd.to_datetime(nonWorldCupInternationalMatches['date'])
+
+    # Merging World Cup matches with Non World Cup Internation matches
+    # mergedWorlCupMatches_df = worldCupMatches_df.merge(nonWorldCupInternationalMatches, left_on='Date', right_on='date', how='outer')
+
+    filtered_WorldCupMatches_df = worldCupMatches_df[worldCupMatches_df[[
+        'Date',
+        'Home Team Name',
+        'Away Team Name',
+        'Home Team Goals',
+        'Away Team Goals'
+        ]].notnull().all(1)]
+
+    finalWorldCupMatches_df =filtered_WorldCupMatches_df[[
+        'Date',
+        'Home Team Name',
+        'Away Team Name',
+        'Home Team Goals',
+        'Away Team Goals',
+        'Win conditions']]
+
+    finalWorldCupMatches_df.rename(columns={"Date": "date",
+                    "Home Team Name": "home_team",
+                    "Away Team Name": "away_team",
+                    "Home Team Goals": "home_score",
+                    "Away Team Goals": "away_score",
+                    "Win conditions": "win_conditions"}, inplace=True)
+
+    frames = [finalWorldCupMatches_df,nonWorldCupInternationalMatches]
+
+    mergedWorldCupMatches_df = pd.concat(frames)
+
+    print(mergedWorldCupMatches_df)
 
 
 if __name__ == '__main__':
