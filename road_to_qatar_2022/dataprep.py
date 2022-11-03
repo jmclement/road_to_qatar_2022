@@ -1,6 +1,7 @@
-from enum import unique
 import os
 import pandas as pd
+from road_to_qatar_2022.utils import getTeamsRanking,cleanUpCountriesName,addingMissingData
+import road_to_qatar_2022.data as src_data
 
 def prepInternational():
     '''
@@ -75,6 +76,8 @@ def prepInternational():
     # Final DF filtered to drop columns not needed
     final_international_merge_df=international_merge_filtered_df[['date','home_team','away_team','home_score','away_score','win_conditions']]
 
+    final_international_merge_df = cleanUpCountriesName(final_international_merge_df)
+
     return final_international_merge_df
 
 
@@ -93,6 +96,7 @@ def prepWorldCupDF():
     worldCupMatches_df['Date'] = (pd.to_datetime(worldCupMatches_df['Datetime']))
     worldCupMatches_df['Date'] = worldCupMatches_df['Date'].dt.date
     worldCupMatches_df['Date'] = pd.to_datetime(worldCupMatches_df['Date'])
+    worldCupMatches_df = cleanUpCountriesName(worldCupMatches_df)
 
     # Find the dates for World Cup matches only
     worldCupDates = (worldCupMatches_df['Date'].unique())
@@ -143,5 +147,53 @@ def prepWorldCupDF():
     return mergedWorldCupMatches_df
 
 
+def prepDataEng():
+    '''
+    Function to combine data from the teams ranking dataset with the final
+    output dataframe from prepWorldCupDF
+    '''
+
+    # Get world cup dataframe from prepWorldCupDF
+    worldCup_DF = prepWorldCupDF()
+
+    # Check if teamsranking data is present, else download it
+    if not os.path.exists(os.path.join(src_data.__path__[0],'teamsranking.csv')):
+        getTeamsRanking()
+
+    # Process the data, adding missing countries and cleaning up the names
+    teamsRanking_DF = pd.read_csv(os.path.join(src_data.__path__[0],'teamsranking.csv'))
+    teamsRanking_DF = addingMissingData(teamsRanking_DF)
+    teamsRanking_DF = cleanUpCountriesName(teamsRanking_DF)
+
+    # Merge the two datasets
+    fullMerge_DF = worldCup_DF.merge(teamsRanking_DF,
+                                     left_on='home_team',
+                                     right_on='countryName',
+                                     how='left').merge(teamsRanking_DF,
+                                                       left_on='away_team',
+                                                       right_on='countryName',
+                                                       how='left',
+                                                       suffixes=('_home','_away'))
+    # Rename the columns in the dataset
+    fullMerge_DF.rename(columns={
+        'rank_home': 'home_team_rank',
+        'totalPoints_home': 'home_team_points',
+        'previousPoints_home': 'home_team_previous_points',
+        'rank_away': 'away_team_rank',
+        'totalPoints_away': 'away_team_points',
+        'previousPoints_away': 'away_team_previous_points',
+    },inplace=True)
+
+    # Drop unused columns
+    fullMerge_DF.drop(['countryCode_home',
+                       'countryName_home',
+                       'countryCode_away',
+                       'countryName_away'],axis=1,inplace=True)
+
+    # Save to csv
+    fullMerge_DF.to_csv(os.path.join(src_data.__path__[0],'fulldataset.csv'),index=False,header=True)
+
+
+
 if __name__ == '__main__':
-    prepWorldCupDF()
+    prepDataEng()
