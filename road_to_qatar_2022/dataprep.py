@@ -1,6 +1,6 @@
 import os
 import pandas as pd
-from road_to_qatar_2022.utils import getTeamsRanking
+from road_to_qatar_2022.utils import getTeamsRanking,cleanUpCountriesName
 import road_to_qatar_2022.data as src_data
 
 def prepInternational():
@@ -76,6 +76,8 @@ def prepInternational():
     # Final DF filtered to drop columns not needed
     final_international_merge_df=international_merge_filtered_df[['date','home_team','away_team','home_score','away_score','win_conditions']]
 
+    final_international_merge_df = cleanUpCountriesName(final_international_merge_df)
+
     return final_international_merge_df
 
 
@@ -94,6 +96,7 @@ def prepWorldCupDF():
     worldCupMatches_df['Date'] = (pd.to_datetime(worldCupMatches_df['Datetime']))
     worldCupMatches_df['Date'] = worldCupMatches_df['Date'].dt.date
     worldCupMatches_df['Date'] = pd.to_datetime(worldCupMatches_df['Date'])
+    worldCupMatches_df = cleanUpCountriesName(worldCupMatches_df)
 
     # Find the dates for World Cup matches only
     worldCupDates = (worldCupMatches_df['Date'].unique())
