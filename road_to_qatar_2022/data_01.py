@@ -4,11 +4,21 @@ import csv
 import os
 import re
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn import shuffle
+from sklearn.model_selection import train_test_split
 
-#Add data source
-import data as src_data
+#Add data source for vinesh
+#import data as src_data
+
+#Add data source for everyone
+import road_to_qatar_2022.data as src_data
+
+#Import utils for everyone
+from road_to_qatar_2022.utils import getTeamsRanking,cleanUpCountriesName,addingMissingData
+import road_to_qatar_2022.data as src_data
 
 def getData ():
     '''Function to retrieve the fulldata set and attemp a baseline'''
@@ -53,8 +63,9 @@ def getWinners():
     winners_df.winner[(winners_df.home_score < winners_df.away_score)] = 2
     winners_df.winner[(winners_df.win_conditions != " ")] = 0
 
-    print(winners_df.head(10))
+    print("Data ready")
     return winners_df
+
 
 if __name__ == "__main__":
     getWinners()

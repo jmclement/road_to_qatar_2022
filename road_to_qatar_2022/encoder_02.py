@@ -12,11 +12,11 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 
 #Add data source for vinesh
-from data_01 import getWinners
+#from data_01 import getWinners
 
 
 #Import utils for everyone
-#from road_to_qatar_2022.data_01 import getWinners
+from road_to_qatar_2022.data_01 import getWinners
 
 def prepareTrainingset():
     '''Preparing Training and Testing Data'''

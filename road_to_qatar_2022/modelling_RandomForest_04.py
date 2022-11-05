@@ -22,9 +22,9 @@ from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.model_selection import GridSearchCV
 #Add data source for vinesh
 #import data as src_data
-# for other add the prefix folder road_t0....
-from standardScaler_03 import standardScaler
-from encoder_02 import prepareTrainingset
+# for everyone add the prefix folder road_t0....
+from road_to_qatar_2022.standardScaler_03 import standardScaler
+from road_to_qatar_2022.encoder_02 import prepareTrainingset
 
 
 def RandomForest():

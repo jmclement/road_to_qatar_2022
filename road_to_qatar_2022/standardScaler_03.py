@@ -14,13 +14,13 @@ from sklearn.preprocessing import StandardScaler
 
 #Add data source for vinesh
 #import data as src_data
-from encoder_02 import prepareTrainingset
+#from encoder_02 import prepareTrainingset
 
 
 #Import utils for everyone
 
 #import road_to_qatar_2022.data as src_data
-#from road_to_qatar_2022.encoder_02 import prepareTrainingset
+from road_to_qatar_2022.encoder_02 import prepareTrainingset
 
 def standardScaler():
     '''Scalling of Data:'''
