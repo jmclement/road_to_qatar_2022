@@ -22,8 +22,8 @@ from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.model_selection import GridSearchCV
 #Add data source for vinesh
 # for every one add road_to_qatar_2022
-from road_to_qatar_2022.standardScaler_03 import standardScaler
-from road_to_qatar_2022.encoder_02 import prepareTrainingset
+from road_to_qatar_2022.modelling.standardScaler_03 import standardScaler
+from road_to_qatar_2022.modelling.encoder_02 import prepareTrainingset
 
 
 def SDGClassifier():

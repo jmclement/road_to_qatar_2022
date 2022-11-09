@@ -23,8 +23,8 @@ from sklearn.model_selection import GridSearchCV
 #Add data source for vinesh
 #import data as src_data
 # for other add the prefix folder road_t0....
-from road_to_qatar_2022.standardScaler_03 import standardScaler
-from road_to_qatar_2022.encoder_02 import prepareTrainingset
+from road_to_qatar_2022.modelling.standardScaler_03 import standardScaler
+from road_to_qatar_2022.modelling.encoder_02 import prepareTrainingset
 
 
 def KNN():
