@@ -20,7 +20,7 @@ from sklearn.preprocessing import StandardScaler
 #Import utils for everyone
 
 #import road_to_qatar_2022.data as src_data
-from road_to_qatar_2022.encoder_02 import prepareTrainingset
+from road_to_qatar_2022.modelling.encoder_02 import prepareTrainingset
 
 def standardScaler():
     '''Scalling of Data:'''

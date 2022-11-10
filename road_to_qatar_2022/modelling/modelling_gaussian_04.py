@@ -17,35 +17,36 @@ from tensorflow import keras
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.wrappers.scikit_learn import KerasClassifier
-from sklearn.svm import SVC
+from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.model_selection import GridSearchCV
 #Add data source for vinesh
-# for everyone add prefix road_to_qatar_2022
-from road_to_qatar_2022.standardScaler_03 import standardScaler
-from road_to_qatar_2022.encoder_02 import prepareTrainingset
+#import data as src_data
+# for other add the prefix folder road_t0....
+from road_to_qatar_2022.modelling.standardScaler_03 import standardScaler
+from road_to_qatar_2022.modelling.encoder_02 import prepareTrainingset
 
 
-def SVM():
-
-    # SVM
+def Gaussian():
 
     X_train_transformed,X_test_transformed = standardScaler()
     X_train_encoded, X_test_encoded, y_train_encoded, y_test_encoded = prepareTrainingset()
-    svm_model = SVC()
-    parameters = {'C' : [ 0.1, 0.001, 1]}#, 'multi_class' :['multinomial', 'ovr'], 'solver': ['lbfgs', 'newton-cg']}
-    svm_model = GridSearchCV(svm_model, param_grid= parameters ,cv=5)
-    svm_model.fit(X_train_transformed, y_train_encoded)
-    score_train_acc = svm_model.score(X_train_transformed, y_train_encoded)
-    score_test_acc = svm_model.score(X_test_transformed, y_test_encoded)
-    print(score_train_acc) # 0.50
+
+    # Gaussian Naive Bayes
+
+
+    nb = GaussianNB()
+    nb.fit(X_train_transformed, y_train_encoded)
+    score_train_acc = nb.score(X_train_transformed, y_train_encoded)
+    score_test_acc = nb.score(X_test_transformed, y_test_encoded)
+    print(score_train_acc) # 0.44
     print(score_test_acc) # 0.47
-    y_pred_SVM = svm_model.predict(X_test_transformed)
-    print(classification_report(y_test_encoded, y_pred_SVM))
-    print(confusion_matrix(y_test_encoded, y_pred_SVM, labels=range(3)))
+    y_pred_nb = nb.predict(X_test_transformed)
+    print(classification_report(y_test_encoded, y_pred_nb))
+    print(confusion_matrix(y_test_encoded, y_pred_nb, labels=range(3)))
 
 
     return
 
 if __name__ == "__main__":
-    SVM()
+    Gaussian()
