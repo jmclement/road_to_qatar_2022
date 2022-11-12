@@ -1,8 +1,15 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-
+from typing import List
 class SelectedTeam(BaseModel):
     name: str
+
+class MatchTemplate(BaseModel):
+    homeTeam: str
+    awayTeam: str
+
+class MatchesList(BaseModel):
+    matches: List[MatchTemplate] = []
 
 app = FastAPI()
 
@@ -21,3 +28,11 @@ def setPreferedTeam(param:SelectedTeam):
 @app.post('/update_predictions')
 def updatePredictions():
     return {'Called update predictions'}
+
+@app.post('/predict')
+def predictResults(param:MatchesList):
+    output = "{"
+    for i in param.matches:
+        output += f"{i.homeTeam} v/s {i.awayTeam},"
+    output += "}"
+    return {output}
