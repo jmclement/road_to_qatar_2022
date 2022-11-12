@@ -53,3 +53,9 @@ pypi_test:
 
 pypi:
 	@twine upload dist/* -u $(PYPI_USERNAME)
+
+# --------------------------
+#      Running the API
+# --------------------------
+dev:
+	@uvicorn --app-dir=./road_to_qatar_2022/mlops api:app --host 0.0.0.0 --port 80 --reload
