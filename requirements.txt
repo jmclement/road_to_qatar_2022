@@ -23,6 +23,7 @@ mlflow
 s3fs
 uvicorn
 fastapi
+pydantic
 
 # utilities
 six>=1.14
