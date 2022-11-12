@@ -21,16 +21,18 @@ import xgboost as xgb
 from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.model_selection import GridSearchCV
 #Add data source for vinesh
-#import data as src_data
+import data as src_data
+from encoder_02 import prepareTrainingset
+from standardScaler_03 import standardScaler
 # for other add the prefix folder road_t0....
-from road_to_qatar_2022.modelling.standardScaler_03 import standardScaler
-from road_to_qatar_2022.modelling.encoder_02 import prepareTrainingset
+#from road_to_qatar_2022.modelling.standardScaler_03 import standardScaler
+#from road_to_qatar_2022.modelling.encoder_02 import prepareTrainingset
 
 
 def XGBoost():
 
-    X_train_transformed,X_test_transformed = standardScaler()
-    X_train_encoded, X_test_encoded, y_train_encoded, y_test_encoded = prepareTrainingset()
+    X_train_transformed,X_test_transformed,X_hold_test = standardScaler()
+    X_hold_test, X_test, y_hold_test, y_test_encoded, X_train, X_val, y_train_encoded, y_val = prepareTrainingset()
 
     # XGBoost
 
