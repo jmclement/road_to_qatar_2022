@@ -1,24 +1,26 @@
 # Add standard imports
-import requests
 import csv
 import os
 import re
-import pandas as pd
-import numpy as np
+
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import requests
 import seaborn as sns
-from sklearn import shuffle
+from sklearn.utils import shuffle
 from sklearn.model_selection import train_test_split
 
-#Add data source for vinesh
-#import data as src_data
-
 #Add data source for everyone
-import road_to_qatar_2022.data as src_data
-
+#import road_to_qatar_2022.data as src_data
 #Import utils for everyone
-from road_to_qatar_2022.utils import getTeamsRanking,cleanUpCountriesName,addingMissingData
-import road_to_qatar_2022.data as src_data
+#from road_to_qatar_2022.utils import (addingMissingData, cleanUpCountriesName,
+                                      #getTeamsRanking)
+
+#Add data source for vinesh
+import data as src_data
+
+
 
 def getData ():
     '''Function to retrieve the fulldata set and attemp a baseline'''
@@ -66,6 +68,61 @@ def getWinners():
     print("Data ready")
     return winners_df
 
+def getKnockoutround():
+    '''From Sample Model notebook: ## Make dataset for knockout round'''
+
+
+    #Filter the teams participating in World cup 22
+    list_2022 = ['Qatar', 'Germany', 'Denmark', 'Brazil', 'France', 'Belgium', 'Croatia', 'Spain', 'Serbia', 'England', 'Switzerland', 'Netherlands', 'Argentina', 'IR Iran', 'Korea Republic', 'Japan', 'Saudi Arabia', 'Ecuador', 'Uruguay', 'Canada', 'Ghana', 'Senegal', 'Portugal', 'Poland', 'Tunisia', 'Morocco', 'Cameroon', 'USA', 'Mexico', 'Wales', 'Australia', 'Costa Rica']
+
+
+    full_df = getData()
+
+    #ADD winner column on dataset
+    winner = []
+    for i in range (len(full_df['home_team'])):
+        if full_df ['home_score'][i] > full_df['away_score'][i]:
+            winner.append('win')
+        elif full_df['home_score'][i] < full_df ['away_score'][i]:
+            winner.append('lose')
+        else:
+            winner.append('Draw')
+    full_df['home_team_result'] = winner
+
+    final_df = full_df[(full_df["home_team"].apply(lambda x: x in list_2022)) | (full_df["away_team"].apply(lambda x: x in list_2022))]
+    final_df = final_df.drop(['date','win_conditions','home_team_previous_points','away_team_previous_points','home_score','away_score'], axis=1)
+    final_df['home_team_result'] = final_df['home_team_result'].map({'win':1, 'Draw':2, 'lose':0})
+    #Holdout another DF for pipeline
+    pipe_DF = final_df
+    #Create dummies for categorical columns
+    final_df = pd.get_dummies(final_df)
+
+
+    full_df = full_df.copy()
+    #change draw result to win depending on win conditions
+    full_df['knockout_result'] = np.where((full_df['home_team_result'] == 'Draw') & (full_df['win_conditions']  == full_df['home_team']), 'win', full_df['home_team_result'])
+    #change draw result to lose depending on win conditions
+    full_df['knockout_result'] = np.where((full_df['knockout_result'] == 'Draw'), 'lose',
+                                      full_df['knockout_result'])
+    #filter teams qualified for world cup 2022
+    final_knockout_df = full_df[(full_df["home_team"].apply(lambda x: x in list_2022)) |
+                            (full_df["away_team"].apply(lambda x: x in list_2022))]
+    #change win, lose into numerical
+    final_knockout_df['knockout_result'] = final_knockout_df['knockout_result'].map({'win':1, 'lose':0})
+    #drop unecessary column for knockout dataset
+    final_knockout_df = final_knockout_df.drop(['date','win_conditions','home_team_previous_points',
+                                            'away_team_previous_points','home_team_result','home_score','away_score'], axis=1)
+
+    #Knockout Round
+    #Holdout another DF for pipeline
+    pipe_DF_knockout = final_knockout_df
+    #Create dummies for categorical columns
+    knockout_final_df = pd.get_dummies(final_knockout_df)
+
+
+
+    #print(final_df['home_team_result'])
+    return final_knockout_df, final_df
 
 if __name__ == "__main__":
-    getWinners()
+    getKnockoutround()
