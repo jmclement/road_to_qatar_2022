@@ -58,4 +58,7 @@ pypi:
 #      Running the API
 # --------------------------
 dev:
-	@uvicorn --app-dir=./road_to_qatar_2022/mlops api:app --host 0.0.0.0 --port 80 --reload
+	@uvicorn --app-dir=./road_to_qatar_2022/mlops api:app --host 0.0.0.0 --port 8000 --reload
+
+run_api:
+	@uvicorn --app-dir=./road_to_qatar_2022/mlops api:app --host 0.0.0.0 --port 8000
