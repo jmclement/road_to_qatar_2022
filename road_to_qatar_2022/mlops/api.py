@@ -1,5 +1,6 @@
 # Importing required Modules for creating API
 from fastapi import FastAPI
+from fastapi.openapi.utils import get_openapi
 from pydantic import BaseModel
 from typing import List
 
@@ -49,3 +50,24 @@ def predictResults(param:MatchesList):
         output += f"{i.homeTeam} v/s {i.awayTeam},"
     output += "}"
     return {output}
+
+
+def custom_openapi():
+    if app.openapi_schema:
+        return app.openapi_schema
+
+    openapi_schema = get_openapi(
+        title="Road to Qatar 2022",
+        version="1.0.0",
+        description="OpenAPI schema to the Road to Qatar Data Science Project",
+        routes=app.routes,
+    )
+
+    openapi_schema['info']['x-logo'] = {
+        "url": "https://img.freepik.com/premium-vector/fifa-world-cup-qatar-2022-logo-stylized-vector-isolated-illustration-with-football_633888-121.jpg?w=2000"
+    }
+
+    app.openapi_schema  = openapi_schema
+    return app.openapi_schema
+
+app.openapi = custom_openapi
