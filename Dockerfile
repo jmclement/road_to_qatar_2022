@@ -7,5 +7,5 @@ RUN pip install -r requirements.txt
 COPY road_to_qatar_2022 /road_to_qatar_2022
 COPY Makefile /Makefile
 
-# CMD uvicorn --app-dir=./road_to_qatar_2022/mlops api:app --host 0.0.0.0 --port 8000 --reload
+# CMD uvicorn --app-dir=./road_to_qatar_2022/mlops api:app --host 0.0.0.0 --port $PORT
 CMD make run_api
