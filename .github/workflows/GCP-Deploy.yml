@@ -36,4 +36,4 @@ jobs:
           run: docker push $IMAGE_NAME
 
         - name: Deploy Docker image
-          run: gcloud run deploy ${{ secrets.GCP_APP_NAME }}:${{ github.ref_name }} --image $IMAGE_NAME --region us-east1 --platform managed --allow-unauthenticated
+          run: gcloud run deploy ${{ secrets.GCP_APP_NAME }}-${{ github.ref_name }} --image $IMAGE_NAME --region us-east1 --platform managed --allow-unauthenticated
