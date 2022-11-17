@@ -17,39 +17,45 @@ from tensorflow import keras
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.wrappers.scikit_learn import KerasClassifier
-# Seed
-#np.random(47)
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import classification_report, confusion_matrix
+
+
 from sklearn.model_selection import GridSearchCV
+from sklearn.ensemble import RandomForestClassifier
 #Add data source for vinesh
-#import data as src_data
+import data as src_data
 from encoder_02 import prepareTrainingset
 from standardScaler_03 import standardScaler
-# for everyone add the prefix folder road_t0....
+from modelling_XGBoost_04 import XGBoost
+
+# for other add the prefix folder road_t0....
 #from road_to_qatar_2022.modelling.standardScaler_03 import standardScaler
 #from road_to_qatar_2022.modelling.encoder_02 import prepareTrainingset
+#from road_to_qatar_2022.modelling.modelling_XGBoost_04 import XGBoost
 
+# Parameters list for tuning
 
-def RandomForest():
-
+def modelTuning():
     X_train_transformed,X_test_transformed = standardScaler()
     X_train_encoded, X_test_encoded, y_train_encoded, y_test_encoded = prepareTrainingset()
 
-    # Random Forest
+    param_grid = {
+    'bootstrap': [True],
+    'max_depth': [80, 90, 100, 110],
+    'max_features': [2, 3],
+    'min_samples_leaf': [3, 4, 5],
+    'min_samples_split': [8, 10, 12],
+    'n_estimators': [100, 200, 300, 1000]
+}
 
 
-    rc = RandomForestClassifier(n_estimators=100)
-    rc.fit(X_train_transformed, y_train_encoded)
-    score_train_acc = rc.score(X_train_transformed, y_train_encoded)
-    score_test_acc = rc.score(X_test_transformed, y_test_encoded)
-    print(score_train_acc) # 0.98
-    print(score_test_acc)  # 0.42
-    y_pred_rc = rc.predict(X_test_transformed)
-    print(classification_report(y_test_encoded, y_pred_rc))
-    print(confusion_matrix(y_test_encoded, y_pred_rc, labels=range(3)))
+    clf_1 = RandomForestClassifier()
+
+    grid_obj1 = GridSearchCV(estimator = clf_1, param_grid = param_grid,
+                            cv = 3, n_jobs = -1, verbose = 2)
+    grid_obj1 = grid_obj1.fit(X_train_transformed,y_train_encoded)
+    clf_1 = grid_obj1.best_estimator_
+    print(clf_1)
 
     return
-
 if __name__ == "__main__":
-    RandomForest()
+    modelTuning()

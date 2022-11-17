@@ -17,6 +17,8 @@ from tensorflow import keras
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.wrappers.scikit_learn import KerasClassifier
+# seed
+#np.random(47)
 import xgboost as xgb
 from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.model_selection import GridSearchCV
@@ -31,12 +33,33 @@ from standardScaler_03 import standardScaler
 
 def XGBoost():
 
-    X_train_transformed,X_test_transformed,X_hold_test = standardScaler()
-    X_hold_test, X_test, y_hold_test, y_test_encoded, X_train, X_val, y_train_encoded, y_val = prepareTrainingset()
+    X_train_transformed,X_test_transformed = standardScaler()
+    X_train_encoded, X_test_encoded, y_train_encoded, y_test_encoded = prepareTrainingset()
 
     # XGBoost
 
-    XGB = xgb.XGBClassifier(base_score=0.5, booster='gbtree', colsample_bylevel=1,colsample_bytree=0.8, gamma=0.4, learning_rate=0.01, max_delta_step=0, max_depth=3, min_child_weight=1, missing=None, n_estimators=40, n_jobs=1, nthread=None, objective='multi:softprob', random_state=0, reg_alpha=1e-05, reg_lambda=1, scale_pos_weight=1, seed=2, silent=True, subsample=0.8)
+    XGB = xgb.XGBClassifier(base_score=0.5,
+                        booster='gbtree',
+                        colsample_bylevel=1,
+                        colsample_bytree=0.8,
+                        gamma=0.4,
+                        learning_rate=0.01,
+                        max_delta_step=0,
+                        max_depth=3,
+                        min_child_weight=1,
+                        #missing=null,
+                        n_estimators=40,
+                        n_jobs=1,
+                        nthread=None,
+                        objective='multi:softprob',
+                        random_state=0,
+                        reg_alpha=1e-05,
+                        reg_lambda=1,
+                        scale_pos_weight=1,
+                        seed=2,
+                        silent=True,
+                        subsample=0.8)
+    #base_score=0.5, booster='gbtree', colsample_bylevel=1,colsample_bytree=0.8, gamma=0.4, learning_rate=0.01, max_delta_step=0, max_depth=3, min_child_weight=1, missing=None, n_estimators=40, n_jobs=1, nthread=None, objective='multi:softprob', random_state=0, reg_alpha=1e-05, reg_lambda=1, scale_pos_weight=1, seed=2, silent=True, subsample=0.8)
     XGB.fit(X_train_transformed, y_train_encoded)
     score_train_acc = XGB.score(X_train_transformed, y_train_encoded)
     score_test_acc = XGB.score(X_test_transformed, y_test_encoded)
