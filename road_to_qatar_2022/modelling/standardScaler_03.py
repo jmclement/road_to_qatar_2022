@@ -26,21 +26,22 @@ def standardScaler():
     '''Scalling of Data:'''
 
     #Scaling
-    X_hold_test, X_test, y_hold_test, y_test, X_train, X_val, y_train, y_val = prepareTrainingset()
-    scaler = StandardScaler()
-    X_train = scaler.fit_transform(X_train)
-    X_test = scaler.transform(X_test)
-    X_hold_test = scaler.transform(X_hold_test)
-
-
-
-    #sc = StandardScaler()
+    #X_hold_test, X_test, y_hold_test, y_test, X_train, X_val, y_train, y_val = prepareTrainingset()
     #X_train_encoded, X_test_encoded, y_train_encoded, y_test_encoded = prepareTrainingset()
-    #X_train_transformed = sc.fit_transform(X_train_encoded)
-    #X_test_transformed = sc.fit_transform(X_test_encoded)
-    print(X_train,X_test,X_hold_test)
-    #print("Scaling done")
-    return X_train,X_test,X_hold_test
+    #scaler = StandardScaler()
+    #X_train = scaler.fit_transform(X_train)
+    #X_test = scaler.transform(X_test)
+    #X_hold_test = scaler.transform(X_hold_test)
+
+
+
+    sc = StandardScaler()
+    X_train_encoded, X_test_encoded, y_train_encoded, y_test_encoded = prepareTrainingset()
+    X_train_transformed = sc.fit_transform(X_train_encoded)
+    X_test_transformed = sc.fit_transform(X_test_encoded)
+    #print(X_train_transformed,X_test_transformed)
+    print("Scaling done")
+    return X_train_transformed,X_test_transformed
 
 if __name__ == "__main__":
     standardScaler()

@@ -26,7 +26,7 @@ def getData ():
     '''Function to retrieve the fulldata set and attemp a baseline'''
     # Load the 2 files from the dataset in a pandas dataframe
     fulldataset_df = pd.read_csv('data/fulldataset.csv')
-    #print(fulldataset_df.head(10))
+    #print(fulldataset_df.info())
     #print(fulldataset_df.describe())
     return fulldataset_df
 
@@ -38,17 +38,46 @@ def getTeams():
     index = 0
     #matches = getData()
     for idx, row in getData().iterrows():
-        name = row['home_team']
+        name = row['Home Team Name']
         if (name not in team_name.keys()):
             team_name[name] = index
             index += 1
 
-        name = row['away_team']
+        name = row['Away Team Name']
         if (name not in team_name.keys()):
             team_name[name] = index
             index += 1
-    #print(team_name.keys())
+    #print(team_name['Indonesia'])
     return team_name
+
+def replace_name():
+    '''Function for replacing the team names by id'''
+    Team_id=getData()
+    team_name = getTeams()
+
+    for index_label, row_series in Team_id.iterrows():
+    # For each row update the 'Team Name' value to it's matching ID value from the team_name
+        Team_id.at[index_label , 'Home Team Name'] =  (team_name.get( Team_id.at[index_label , 'Home Team Name']))
+        Team_id.at[index_label , 'Away Team Name'] =  (team_name.get( Team_id.at[index_label , 'Away Team Name']))
+    # Now we dont need number of goals and year
+
+    Team_id = Team_id.drop(['Date','Home Team Goals', 'Away Team Goals'], 1)
+
+    #Team_id.replace(np.nan,0)
+    Team_id=Team_id.fillna(0)
+    Team_id= Team_id[['Home Team Name',
+                 'Away Team Name',
+                 'home_team_rank',
+                 'home_team_points',
+                 'home_team_previous_points',
+                 'away_team_rank',
+                 'away_team_points',
+                 'away_team_previous_points',
+                 'Home Team Champion',
+                 'Away Team Champion',
+                 'Winner']]
+    #print(Team_id.isnull().sum().sum())
+    return Team_id
 
 def getWinners():
     '''Determining the winner of a particular match.
@@ -125,4 +154,4 @@ def getKnockoutround():
     return final_knockout_df, final_df
 
 if __name__ == "__main__":
-    getKnockoutround()
+    replace_name()
