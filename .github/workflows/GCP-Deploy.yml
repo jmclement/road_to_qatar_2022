@@ -2,7 +2,7 @@ name: Docker-GCP
 
 on:
   push:
-    branches: [ master, jm-api ]
+    branches: [ master, jm-api, refactor ]
   pull_request:
     branches: [ master ]
 

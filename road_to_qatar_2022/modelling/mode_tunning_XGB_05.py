@@ -23,9 +23,9 @@ from sklearn.model_selection import GridSearchCV
 import xgboost as xgb
 #Add data source for vinesh
 import data as src_data
-from modelling.encoder_02 import prepareTrainingset
-from modelling.standardScaler_03 import standardScaler
-from modelling.modelling_XGBoost_04 import XGBoost
+from road_to_qatar_2022.modelling.encoder_02 import prepareTrainingset
+from road_to_qatar_2022.modelling.standardScaler_03 import standardScaler
+from road_to_qatar_2022.modelling.modelling_XGBoost_04 import XGBoost
 
 # for other add the prefix folder road_t0....
 #from road_to_qatar_2022.modelling.standardScaler_03 import standardScaler
