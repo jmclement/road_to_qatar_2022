@@ -20,16 +20,20 @@ from sklearn.model_selection import train_test_split
 #Add data source for vinesh
 import data as src_data
 
-
+#Import pac
 
 def getData ():
-    '''Function to retrieve the fulldata set and attemp a baseline'''
+    '''Function to retrieve the fulldata dataset'''
     # Load the 2 files from the dataset in a pandas dataframe
     fulldataset_df = pd.read_csv('data/fulldataset.csv')
     #print(fulldataset_df.info())
     #print(fulldataset_df.describe())
     return fulldataset_df
 
+def getTeamRankings ():
+    '''Function to retrieve the team rankings dataset'''
+    teamranking_df = pd.read_csv('data/teamsranking.csv')
+    return teamranking_df
 
 
 def getTeams():

@@ -26,20 +26,23 @@ from sklearn.model_selection import GridSearchCV
 #import data as src_data
 from encoder_02 import prepareTrainingset
 from standardScaler_03 import standardScaler
+
 # for everyone add the prefix folder road_t0....
 #from road_to_qatar_2022.modelling.standardScaler_03 import standardScaler
 #from road_to_qatar_2022.modelling.encoder_02 import prepareTrainingset
 
 
-def RandomForest():
+def RandomForest(**kwargs):
 
     X_train_transformed,X_test_transformed = standardScaler()
     X_train_encoded, X_test_encoded, y_train_encoded, y_test_encoded = prepareTrainingset()
 
     # Random Forest
 
+    p={'n_estimators' : 100}
+    p = kwargs
 
-    rc = RandomForestClassifier(n_estimators=100)
+    rc = RandomForestClassifier(**p)
     rc.fit(X_train_transformed, y_train_encoded)
     score_train_acc = rc.score(X_train_transformed, y_train_encoded)
     score_test_acc = rc.score(X_test_transformed, y_test_encoded)
@@ -49,7 +52,7 @@ def RandomForest():
     print(classification_report(y_test_encoded, y_pred_rc))
     print(confusion_matrix(y_test_encoded, y_pred_rc, labels=range(3)))
 
-    return
+    return rc
 
 if __name__ == "__main__":
     RandomForest()
