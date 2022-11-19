@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.openapi.utils import get_openapi
 from pydantic import BaseModel
 from typing import List
-from road_to_qatar_2022.interface import main_local
+import road_to_qatar_2022.interface.main_local as main_local
 
 # Define a class to model the request body content expected in POST requests
 
@@ -52,9 +52,9 @@ def predictResults(param:MatchesList):
     output += "}"
     return {output}
 
-@app.post('/model')
+@app.get('/model')
 def runModel():
-    return {main_local.prediction_fixtures()}
+    return {'fdsf':main_local.prediction_fixtures()}
 
 
 def custom_openapi():
