@@ -25,7 +25,7 @@ from sklearn.ensemble import RandomForestClassifier
 import data as src_data
 from encoder_02 import prepareTrainingset
 from standardScaler_03 import standardScaler
-from modelling_XGBoost_04 import XGBoost
+from modelling_RandomForest_04 import RandomForest
 
 # for other add the prefix folder road_t0....
 #from road_to_qatar_2022.modelling.standardScaler_03 import standardScaler
@@ -48,14 +48,16 @@ def modelTuning():
 }
 
 
-    clf_1 = RandomForestClassifier()
+    clf_1 = RandomForest()
 
     grid_obj1 = GridSearchCV(estimator = clf_1, param_grid = param_grid,
                             cv = 3, n_jobs = -1, verbose = 2)
     grid_obj1 = grid_obj1.fit(X_train_transformed,y_train_encoded)
     clf_1 = grid_obj1.best_estimator_
-    print(clf_1)
 
-    return
+    #print(clf_1.get_params())
+    #RFC_tuned_params=clf_1.get_params()
+    #print(RFC_tuned_params)
+    return clf_1
 if __name__ == "__main__":
     modelTuning()

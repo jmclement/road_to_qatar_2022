@@ -23,9 +23,9 @@ from sklearn.model_selection import GridSearchCV
 import xgboost as xgb
 #Add data source for vinesh
 import data as src_data
-from encoder_02 import prepareTrainingset
-from standardScaler_03 import standardScaler
-from modelling_XGBoost_04 import XGBoost
+from modelling.encoder_02 import prepareTrainingset
+from modelling.standardScaler_03 import standardScaler
+from modelling.modelling_XGBoost_04 import XGBoost
 
 # for other add the prefix folder road_t0....
 #from road_to_qatar_2022.modelling.standardScaler_03 import standardScaler
@@ -37,6 +37,8 @@ from modelling_XGBoost_04 import XGBoost
 def modelTuning():
     X_train_transformed,X_test_transformed = standardScaler()
     X_train_encoded, X_test_encoded, y_train_encoded, y_test_encoded = prepareTrainingset()
+    XGB = XGBoost()
+
     parameters = { 'learning_rate' : [0.001,0.01, 0.1, 1],
                 'n_estimators' : [40, 100],
                 'max_depth': [3, 6],
@@ -47,14 +49,18 @@ def modelTuning():
                 'scale_pos_weight' : [1],
                 'reg_alpha':[1e-5]
                 }
-    clf = xgb.XGBClassifier(seed=2)
+    clf = XGB
 
     grid_obj = GridSearchCV(clf,
                             param_grid=parameters,
-                            cv=5)
+                            cv=5
+                            )
     grid_obj = grid_obj.fit(X_train_transformed,y_train_encoded)
     clf = grid_obj.best_estimator_
-    print(clf)
-    return
+    #tuned_xgb_params= clf.get_params()
+    #print(tuned_xgb_params)
+    #print(estimator)
+
+    return clf
 if __name__ == "__main__":
     modelTuning()

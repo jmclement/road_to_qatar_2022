@@ -13,7 +13,7 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.preprocessing import StandardScaler
 
 #Add data source for vinesh
-from data_01 import replace_name
+from modelling.data_01 import replace_name
 
 
 #Import utils for everyone
