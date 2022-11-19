@@ -55,6 +55,7 @@ def predictResults(param:MatchesList):
 @app.get('/model')
 def runModel():
     return {'fdsf':main_local.prediction_fixtures()}
+    # return {'ds':'dsa'}
 
 
 def custom_openapi():
