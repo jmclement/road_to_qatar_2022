@@ -4,6 +4,7 @@ from fastapi.openapi.utils import get_openapi
 from pydantic import BaseModel
 from typing import List
 import road_to_qatar_2022.interface.main_local as main_local
+import pandas as pd
 
 # Define a class to model the request body content expected in POST requests
 
@@ -20,13 +21,19 @@ class MatchTemplate(BaseModel):
 class MatchesList(BaseModel):
     matches: List[MatchTemplate] = []
 
+
+model_output = pd.DataFrame()
+
+
 # Instantiate the FastAPI
 app = FastAPI()
 
 # Define default route
 @app.get('/')
 def index():
-    return {'ok':True}
+    return {'status':True,
+            'Note': 'API up and running'
+            }
 
 # Define route to get winner
 @app.get('/winner')
@@ -36,7 +43,12 @@ def getWinner():
 # Define route for choosing the selected team
 @app.post('/selected_team')
 def setPreferedTeam(param:SelectedTeam):
-    return {'Post':f'{param.name}'}
+
+    matches = model_output[(model_output['Home_team'] == param.name) | (model_output['Away_team'] == param.name)]
+
+    matches['Winner'] = matches['Winner'].map(int)
+
+    return matches.to_dict(orient='index')
 
 # Route to 'save' the results of predictions
 @app.post('/update_predictions')
@@ -55,23 +67,21 @@ def predictResults(param:MatchesList):
 @app.get('/model')
 def runModel():
 
-    output_df, rewrite_df = main_local.prediction_fixtures()
+    # output_df, rewrite_df = main_local.prediction_fixtures()
 
-    # matches = output_df[output_df['Home_team'] != 'Qatar']
-    matches = output_df
+    matches = model_output
 
     matches['Winner'] = matches['Winner'].map(int)
 
-    # print(output_df.to_json(orient='index'))
-    # print(matches.to_json())
-
-    # matches_dict = matches.to_dict(index=False,path_or_buf='string')
-
-    # outResponse = f"{matches_dict}"
-
-    # print(matches.to_json(orient='split', index=False, path_or_buf='string'))
-    # return {'data': outResponse}
     return matches.to_dict(orient='index')
+
+@app.on_event('startup')
+def startup_event():
+    print('Running startup')
+    global model_output
+
+    model_output, rewrite_df = main_local.prediction_fixtures()
+    print('Finishing startup')
 
 
 def custom_openapi():
