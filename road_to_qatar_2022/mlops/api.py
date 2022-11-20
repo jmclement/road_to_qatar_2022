@@ -54,7 +54,16 @@ def predictResults(param:MatchesList):
 
 @app.get('/model')
 def runModel():
-    return {'fdsf':main_local.prediction_fixtures()}
+
+    output_df, rewrite_df = main_local.prediction_fixtures()
+
+    matches = output_df[output_df['Home_team'] != 'Qatar']
+
+    matches_dict = matches.to_dict()
+
+    outResponse = f"{matches_dict}"
+
+    return {'data': outResponse}
     # return {'ds':'dsa'}
 
 
