@@ -57,14 +57,21 @@ def runModel():
 
     output_df, rewrite_df = main_local.prediction_fixtures()
 
-    matches = output_df[output_df['Home_team'] != 'Qatar']
+    # matches = output_df[output_df['Home_team'] != 'Qatar']
+    matches = output_df
 
-    matches_dict = matches.to_dict()
+    matches['Winner'] = matches['Winner'].map(int)
 
-    outResponse = f"{matches_dict}"
+    # print(output_df.to_json(orient='index'))
+    # print(matches.to_json())
 
-    return {'data': outResponse}
-    # return {'ds':'dsa'}
+    # matches_dict = matches.to_dict(index=False,path_or_buf='string')
+
+    # outResponse = f"{matches_dict}"
+
+    # print(matches.to_json(orient='split', index=False, path_or_buf='string'))
+    # return {'data': outResponse}
+    return matches.to_dict(orient='index')
 
 
 def custom_openapi():
