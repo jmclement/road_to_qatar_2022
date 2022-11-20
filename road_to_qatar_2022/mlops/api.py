@@ -7,15 +7,16 @@ import road_to_qatar_2022.interface.main_local as main_local
 import pandas as pd
 
 # Define a class to model the request body content expected in POST requests
-
 # Team selection request body model
 class SelectedTeam(BaseModel):
     name: str
+
 
 # Match request body model
 class MatchTemplate(BaseModel):
     homeTeam: str
     awayTeam: str
+
 
 # Matches list request body model
 class MatchesList(BaseModel):
@@ -28,6 +29,7 @@ model_output = pd.DataFrame()
 # Instantiate the FastAPI
 app = FastAPI()
 
+
 # Define default route
 @app.get('/')
 def index():
@@ -35,10 +37,12 @@ def index():
             'Note': 'API up and running'
             }
 
+
 # Define route to get winner
 @app.get('/winner')
 def getWinner():
     return {'Res':'Winner called'}
+
 
 # Define route for choosing the selected team
 @app.post('/selected_team')
@@ -50,10 +54,12 @@ def setPreferedTeam(param:SelectedTeam):
 
     return matches.to_dict(orient='index')
 
+
 # Route to 'save' the results of predictions
 @app.post('/update_predictions')
 def updatePredictions():
     return {'Called update predictions'}
+
 
 # Route to generate the predictions for a match or list of matches
 @app.post('/predict')
@@ -64,6 +70,8 @@ def predictResults(param:MatchesList):
     output += "}"
     return {output}
 
+
+# Route to get all the match results from the model
 @app.get('/model')
 def runModel():
 
@@ -75,6 +83,8 @@ def runModel():
 
     return matches.to_dict(orient='index')
 
+
+# Running on startup - Initiating the model, and generating the initial predictions
 @app.on_event('startup')
 def startup_event():
     print('Running startup')
@@ -84,6 +94,7 @@ def startup_event():
     print('Finishing startup')
 
 
+# Customising the API doc
 def custom_openapi():
     if app.openapi_schema:
         return app.openapi_schema
