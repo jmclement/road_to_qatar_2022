@@ -31,3 +31,7 @@ joblib
 memoized-property
 termcolor
 kaggle
+
+# font-end
+streamlit
+streamlit-option-menu
