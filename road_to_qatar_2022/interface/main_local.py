@@ -177,7 +177,7 @@ def prediction_fixtures():
     # fixtures_wc = pd.read_csv('../data/fixtures_2_perGrp.csv')
     fixtures_wc = fixtures_wc.drop(['Round Number', 'Date', 'Location', 'Result'], 1)
     output_df = pd.DataFrame(columns = ['Group','Home_team','Away_team','Home_win','Away_win','Draw','Winner'])
-    fix = fixtures_wc.loc[0:17, :]
+    fix = fixtures_wc.loc[0:49, :]
     ReWrite_pred_df = createRewriteTable()
     #prediction = prediction()
     #Group A
@@ -239,9 +239,9 @@ def groupPrediction(fix,grp,ReWrite_pred_df,output_df):
 
         probs, text, ReWrite_pred_df = prediction(corr_row['Home Team'], corr_row['Away Team'],ReWrite_pred_df)
         print('Results \n', text)
-        conditions = [probs[0]> probs[1] and probs[0]> probs[2],
-               probs[1]> probs[2],
-               probs[2]>probs[1]]
+        conditions = [probs[0] > probs[1] and probs[0] > probs[2],
+               probs[1] > probs[2],
+               probs[2] > probs[1]]
         values =[0,1,2]
 
         Winner=np.select(conditions,values)
