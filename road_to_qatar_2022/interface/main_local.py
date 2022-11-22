@@ -177,7 +177,7 @@ def prediction_fixtures():
     # fixtures_wc = pd.read_csv('../data/fixtures_2_perGrp.csv')
     fixtures_wc = fixtures_wc.drop(['Round Number', 'Date', 'Location', 'Result'], 1)
     output_df = pd.DataFrame(columns = ['Group','Home_team','Away_team','Home_win','Away_win','Draw','Winner'])
-    fix = fixtures_wc.loc[0:40, :]
+    fix = fixtures_wc.loc[0:20, :]
     ReWrite_pred_df = createRewriteTable()
     #prediction = prediction()
     #Group A
