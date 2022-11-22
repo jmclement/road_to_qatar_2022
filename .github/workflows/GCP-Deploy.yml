@@ -47,4 +47,4 @@ jobs:
           run: docker push $IMAGE_NAME
 
         - name: Deploy Docker image
-          run: gcloud run deploy ${{ secrets.GCP_APP_NAME }}-$BRANCH_NAME --image $IMAGE_NAME --region us-east1 --platform managed --allow-unauthenticated --memory '1Gi'
+          run: gcloud run deploy ${{ secrets.GCP_APP_NAME }}-$BRANCH_NAME --image $IMAGE_NAME --region us-east1 --platform managed --allow-unauthenticated --memory '1Gi' --set-env-vars "PORT=8000"
