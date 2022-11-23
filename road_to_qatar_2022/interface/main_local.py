@@ -236,7 +236,7 @@ def groupPrediction(fix,grp,ReWrite_pred_df,output_df):
         corr_row = new_fix.loc[indx]
 
         probs, text, ReWrite_pred_df = prediction(corr_row['Home Team'], corr_row['Away Team'],ReWrite_pred_df)
-        print('Results \n', text)
+        # print('Results \n', text)
         conditions = [probs[0] > probs[1] and probs[0] > probs[2],
                probs[1] > probs[2],
                probs[2] > probs[1]]
