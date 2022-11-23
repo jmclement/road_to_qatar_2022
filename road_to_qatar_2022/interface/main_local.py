@@ -169,7 +169,7 @@ def prediction(team1,team2,df):
     #print(test_input1,id1,championship1,home_team_rank,home_team_points,home_team_previous_points)
     #return test_input1,id1,championship1,home_team_rank,home_team_points,home_team_previous_points
 
-def prediction_fixtures():
+def prediction_fixtures(grpRound):
     '''This function calls the prediction function'''
 
     fixtures_wc = pd.read_csv(os.path.join(src_data.__path__[0],'fixtures_2_perGrp.csv'))
@@ -178,7 +178,7 @@ def prediction_fixtures():
     fixtures_wc = fixtures_wc.drop(['Date', 'Location', 'Result'], 1)
     output_df = pd.DataFrame(columns = ['Group','Home_team','Away_team','Home_win','Away_win','Draw','Winner'])
 
-    fix = fixtures_wc[fixtures_wc['Round Number'] == 3]
+    fix = fixtures_wc[fixtures_wc['Round Number'] == grpRound]
 
     ReWrite_pred_df = createRewriteTable()
     #prediction = prediction()
@@ -273,6 +273,11 @@ def appendToTeamId():
     output_df.truncate()
     return
 
+def run_Group_Stage():
+    for i in range(1,4):
+        prediction_fixtures(i)
+
 if __name__ == "__main__":
-    prediction_fixtures()
+    # prediction_fixtures()
+    run_Group_Stage()
     #callTeams('Iran')

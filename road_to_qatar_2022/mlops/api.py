@@ -22,7 +22,7 @@ class MatchTemplate(BaseModel):
 class MatchesList(BaseModel):
     matches: List[MatchTemplate] = []
 
-
+model_df = pd.DataFrame()
 model_output = pd.DataFrame()
 
 
@@ -113,11 +113,19 @@ def runModel():
 # Running on startup - Initiating the model, and generating the initial predictions
 @app.on_event('startup')
 def startup_event():
-    print('Running startup')
+    print(f'{"Running startup":-^25}')
+    global model_df
     global model_output
 
-    model_output, rewrite_df = main_local.prediction_fixtures()
-    print('Finishing startup')
+    for i in range(1,4):
+        print(f'{"Model DF":*^20}')
+        print(model_df)
+        print(f'{"Model Output":.^20}')
+        print(model_output)
+        model_df, rewrite_df = main_local.prediction_fixtures(i)
+        model_output = model_output.append(model_df,ignore_index=True)
+
+    print(f'{"Finishing startup":-^25}')
 
 
 # Customising the API doc
