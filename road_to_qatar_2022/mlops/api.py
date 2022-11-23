@@ -6,6 +6,8 @@ from typing import List
 import road_to_qatar_2022.interface.main_local as main_local
 import pandas as pd
 
+import asyncio
+
 # Define a class to model the request body content expected in POST requests
 # Team selection request body model
 class SelectedTeam(BaseModel):
@@ -112,17 +114,18 @@ def runModel():
 
 # Running on startup - Initiating the model, and generating the initial predictions
 @app.on_event('startup')
-def startup_event():
+async def startup_event():
     print(f'{"Running startup":-^25}')
     global model_df
     global model_output
 
-    for i in range(1,2):
+    for i in range(1,4):
         # print(f'{"Model DF":*^20}')
         # print(model_df)
         # print(f'{"Model Output":.^20}')
         # print(model_output)
-        model_df, rewrite_df = main_local.prediction_fixtures(i)
+        print(f"In loop {i}")
+        model_df, rewrite_df = await main_local.prediction_fixtures(i)
         model_output = model_output.append(model_df,ignore_index=True)
 
     print(f'{"Model DF":*^20}')
