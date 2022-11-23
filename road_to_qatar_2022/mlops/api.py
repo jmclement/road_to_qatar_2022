@@ -64,11 +64,37 @@ def updatePredictions():
 # Route to generate the predictions for a match or list of matches
 @app.post('/predict')
 def predictResults(param:MatchesList):
-    output = "{"
-    for i in param.matches:
-        output += f"{i.homeTeam} v/s {i.awayTeam},"
-    output += "}"
-    return {output}
+    number_of_matches = len(param.matches)
+    match = param.matches[0]
+    # output = "{"
+    # for i in param.matches:
+    #     output += f"{i.homeTeam} v/s {i.awayTeam},"
+    # output += "}"
+
+    table = main_local.createRewriteTable()
+
+    probs,txt_output,table = main_local.prediction(match.homeTeam,match.awayTeam,table)
+
+    print(f"{'Probabilities':-^20}")
+    print(f"Draw: {probs[0]}")
+    print(f"Home Team ({match.homeTeam}): {probs[1]}")
+    print(f"Away Team ({match.awayTeam}): {probs[2]}")
+
+
+    table['Winner'] = table['Winner'].map(int)
+
+    tblWinValue = table['Winner'][0]
+
+    if tblWinValue == 0:
+        retVal = f"{match.homeTeam} draws {match.awayTeam}"
+    elif tblWinValue == 1:
+        retVal = f"{match.homeTeam} wins over {match.awayTeam}"
+    else:
+        retVal = f"{match.homeTeam} loses against {match.awayTeam}"
+
+
+    print(txt_output)
+    return {'result': retVal}
 
 
 # Route to get all the match results from the model
