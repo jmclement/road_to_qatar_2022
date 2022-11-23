@@ -47,4 +47,4 @@ jobs:
           run: docker push $IMAGE_NAME
 
         - name: Deploy Docker image
-          run: gcloud run deploy ${{ secrets.GCP_APP_NAME }}-$BRANCH_NAME --image $IMAGE_NAME --region us-east1 --platform managed --allow-unauthenticated --memory '2Gi' --cpu=2 --no-cpu-throttling
+          run: gcloud run deploy ${{ secrets.GCP_APP_NAME }}-$BRANCH_NAME --image $IMAGE_NAME --region us-east1 --platform managed --allow-unauthenticated --memory '2Gi' --cpu=2 --min-instances=1 --no-cpu-throttling
