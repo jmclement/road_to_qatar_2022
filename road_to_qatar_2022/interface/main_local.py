@@ -175,9 +175,11 @@ def prediction_fixtures():
     fixtures_wc = pd.read_csv(os.path.join(src_data.__path__[0],'fixtures_2_perGrp.csv'))
 
     # fixtures_wc = pd.read_csv('../data/fixtures_2_perGrp.csv')
-    fixtures_wc = fixtures_wc.drop(['Round Number', 'Date', 'Location', 'Result'], 1)
+    fixtures_wc = fixtures_wc.drop(['Date', 'Location', 'Result'], 1)
     output_df = pd.DataFrame(columns = ['Group','Home_team','Away_team','Home_win','Away_win','Draw','Winner'])
-    fix = fixtures_wc.loc[0:47, :]
+
+    fix = fixtures_wc[fixtures_wc['Round Number'] == 3]
+
     ReWrite_pred_df = createRewriteTable()
     #prediction = prediction()
     #Group A
@@ -227,15 +229,11 @@ def prediction_fixtures():
 
 def groupPrediction(fix,grp,ReWrite_pred_df,output_df):
     grpVal = f'Group {grp}'
-    for i in range(len(fix)):
-        array = (fix['Group'] == grpVal)
-        index = []
-        for ar in range(len(array)):
-            if array[ar] == True:
-                index.append(ar)
 
-    for indx in range(len(index)):
-        corr_row = fix.loc[index[indx]]
+    new_fix = fix[fix['Group'] == grpVal].reset_index()
+
+    for indx in range(len(new_fix)):
+        corr_row = new_fix.loc[indx]
 
         probs, text, ReWrite_pred_df = prediction(corr_row['Home Team'], corr_row['Away Team'],ReWrite_pred_df)
         print('Results \n', text)
