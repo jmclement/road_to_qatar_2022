@@ -117,7 +117,7 @@ def startup_event():
     global model_df
     global model_output
 
-    for i in range(1,4):
+    for i in range(1,2):
         print(f'{"Model DF":*^20}')
         print(model_df)
         print(f'{"Model Output":.^20}')
