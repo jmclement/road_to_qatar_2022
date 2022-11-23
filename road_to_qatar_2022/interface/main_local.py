@@ -3,8 +3,6 @@ import csv
 import os
 import re
 
-import asyncio
-
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -171,7 +169,7 @@ def prediction(team1,team2,df):
     #print(test_input1,id1,championship1,home_team_rank,home_team_points,home_team_previous_points)
     #return test_input1,id1,championship1,home_team_rank,home_team_points,home_team_previous_points
 
-async def prediction_fixtures(grpRound):
+def prediction_fixtures(grpRound):
     '''This function calls the prediction function'''
 
     fixtures_wc = pd.read_csv(os.path.join(src_data.__path__[0],'fixtures_2_perGrp.csv'))
