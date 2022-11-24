@@ -101,19 +101,7 @@ def predictResults(param:MatchesList):
 @app.get('/model')
 def runModel():
 
-    # output_df, rewrite_df = main_local.prediction_fixtures()
-
-    matches = model_output
-
-    matches['Winner'] = matches['Winner'].map(int)
-
-    return matches.to_dict(orient='index')
-
-
-# Running on startup - Initiating the model, and generating the initial predictions
-@app.on_event('startup')
-def startup_event():
-    print(f'{"Running startup":-^25}')
+    print(f'{"Running model":-^25}')
     global model_df
     global model_output
 
@@ -130,6 +118,38 @@ def startup_event():
     print(model_df)
     print(f'{"Model Output":.^20}')
     print(model_output)
+
+    print(f'{"Finishing model":-^25}')
+
+    # output_df, rewrite_df = main_local.prediction_fixtures()
+
+    matches = model_output
+
+    matches['Winner'] = matches['Winner'].map(int)
+
+    return matches.to_dict(orient='index')
+
+
+# Running on startup - Initiating the model, and generating the initial predictions
+@app.on_event('startup')
+def startup_event():
+    print(f'{"Running startup":-^25}')
+    # global model_df
+    # global model_output
+
+    # for i in range(1,4):
+    #     # print(f'{"Model DF":*^20}')
+    #     # print(model_df)
+    #     # print(f'{"Model Output":.^20}')
+    #     # print(model_output)
+    #     print(f"In loop {i}")
+    #     model_df, rewrite_df = main_local.prediction_fixtures(i)
+    #     model_output = model_output.append(model_df,ignore_index=True)
+
+    # print(f'{"Model DF":*^20}')
+    # print(model_df)
+    # print(f'{"Model Output":.^20}')
+    # print(model_output)
 
     print(f'{"Finishing startup":-^25}')
 
