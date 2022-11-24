@@ -56,6 +56,6 @@ jobs:
           id: runModel
           uses: fjogeleit/http-request-action@v1
           with:
-            url: 'https://qatar-2022-api-${{$BRANCH_NAME}}-3axvvmvj6a-ue.a.run.app'
+            url: 'https://qatar-2022-api-$BRANCH_NAME-3axvvmvj6a-ue.a.run.app'
             method: 'GET'
           # run: echo "${{ steps.deployDocker.outputs.DEP_OUT }}"
