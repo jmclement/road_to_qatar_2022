@@ -20,12 +20,16 @@ from pathlib import Path
 #from road_to_qatar_2022.modelling import (data_01)
 
 #Add data source for vinesh
-import data as src_data
-from modelling import (data_01,encoder_02,standardScaler_03, modelling_XGBoost_04,mode_tunning_XGB_05, tune_model_with_params_06)
-import dataprep
-import utils
+import road_to_qatar_2022.data as src_data
+# from modelling import (data_01,encoder_02,standardScaler_03, modelling_XGBoost_04,mode_tunning_XGB_05, tune_model_with_params_06)
+import road_to_qatar_2022.modelling.data_01 as data_01
+import road_to_qatar_2022.modelling.tune_model_with_params_06 as tune_model_with_params_06
+import road_to_qatar_2022.dataprep as dataprep
+import road_to_qatar_2022.utils as utils
 import pickle
 
+import warnings
+warnings.filterwarnings("ignore")
 
 
 def getTeams (teamX):
@@ -114,7 +118,7 @@ def prediction(team1,team2,df):
     t = np.reshape(t, (1,-1))
 
     # Instantiating the tuned model and calling it with the teams data for which a prediciton is required
-    loaded_model = pickle.load(open('data/model_tuned', 'rb'))
+    loaded_model = pickle.load(open(os.path.join(src_data.__path__[0],'model_tuned'), 'rb'))
     XGB = loaded_model
     #XGB = tune_model_with_params_06.new_tuned_model()
 
@@ -165,237 +169,55 @@ def prediction(team1,team2,df):
     #print(test_input1,id1,championship1,home_team_rank,home_team_points,home_team_previous_points)
     #return test_input1,id1,championship1,home_team_rank,home_team_points,home_team_previous_points
 
-def prediction_fixtures():
+def prediction_fixtures(grpRound):
     '''This function calls the prediction function'''
 
-    fixtures_wc = pd.read_csv('../raw_data/data/Fixtures/fixtures_2_perGrp.csv')
-    fixtures_wc = fixtures_wc.drop(['Round Number', 'Date', 'Location', 'Result'], 1)
+    fixtures_wc = pd.read_csv(os.path.join(src_data.__path__[0],'fixtures_2_perGrp.csv'))
+
+    # fixtures_wc = pd.read_csv('../data/fixtures_2_perGrp.csv')
+    fixtures_wc = fixtures_wc.drop(['Date', 'Location', 'Result'], 1)
     output_df = pd.DataFrame(columns = ['Group','Home_team','Away_team','Home_win','Away_win','Draw','Winner'])
-    fix = fixtures_wc.loc[0:17, :]
+
+    fix = fixtures_wc[fixtures_wc['Round Number'] == grpRound]
+
     ReWrite_pred_df = createRewriteTable()
     #prediction = prediction()
     #Group A
-    for i in range(len(fix)):
-        array = (fix['Group'] == 'Group A')
-        index = []
-        for ar in range(len(array)):
-            if array[ar] == True:
-                index.append(ar)
 
-    for indx in range(len(index)):
-        corr_row = fix.loc[index[indx]]
+    # output_df = groupPrediction(fix,'A',ReWrite_pred_df,output_df)
+    '''
+    # for i in range(len(fix)):
+    #     array = (fix['Group'] == 'Group A')
+    #     index = []
+    #     for ar in range(len(array)):
+    #         if array[ar] == True:
+    #             index.append(ar)
 
-        probs, text, ReWrite_pred_df = prediction(corr_row['Home Team'], corr_row['Away Team'],ReWrite_pred_df)
-        print('Results \n', text)
-        conditions = [probs[0]> probs[1] and probs[0]> probs[2],
-               probs[1]> probs[2],
-               probs[2]>probs[1]]
-        values =[0,1,2]
+    # for indx in range(len(index)):
+    #     corr_row = fix.loc[index[indx]]
 
-        Winner=np.select(conditions,values)
-        output_df=output_df.append({'Group':'Group A',
-                                'Home_team':corr_row['Home Team'],
-                                'Away_team':corr_row['Away Team'],
-                                'Home_win':probs[1],
-                                'Away_win':probs[2],
-                                'Draw':probs[0],
-                                'Winner':Winner},
-                                ignore_index = True)
-    #GROUP B
-    for i in range(len(fix)):
-        array = (fix['Group'] == 'Group B')
-        index = []
-        for ar in range(len(array)):
-            if array[ar] == True:
-                index.append(ar)
+    #     probs, text, ReWrite_pred_df = prediction(corr_row['Home Team'], corr_row['Away Team'],ReWrite_pred_df)
+    #     print('Results \n', text)
+    #     conditions = [probs[0]> probs[1] and probs[0]> probs[2],
+    #            probs[1]> probs[2],
+    #            probs[2]>probs[1]]
+    #     values =[0,1,2]
 
-    for indx in range(len(index)):
-        corr_row = fix.loc[index[indx]]
+    #     Winner=np.select(conditions,values)
+    #     output_df=output_df.append({'Group':'Group A',
+    #                             'Home_team':corr_row['Home Team'],
+    #                             'Away_team':corr_row['Away Team'],
+    #                             'Home_win':probs[1],
+    #                             'Away_win':probs[2],
+    #                             'Draw':probs[0],
+    #                             'Winner':Winner},
+    #                             ignore_index = True)
+    '''
 
-        probs, text, ReWrite_pred_df = prediction(corr_row['Home Team'], corr_row['Away Team'],ReWrite_pred_df)
-        print('Results \n', text)
-        conditions = [probs[0]> probs[1] and probs[0]> probs[2],
-               probs[1]> probs[2],
-               probs[2]>probs[1]]
-        values =[0,1,2]
+    groups = ['A','B','C','D','E','F','G','H']
 
-        Winner=np.select(conditions,values)
-        output_df=output_df.append({'Group':'Group B',
-                                'Home_team':corr_row['Home Team'],
-                                'Away_team':corr_row['Away Team'],
-                                'Home_win':probs[1],
-                                'Away_win':probs[2],
-                                'Draw':probs[0],
-                                'Winner':Winner},
-                                ignore_index = True)
-
-    #Group C
-    for i in range(len(fix)):
-        array = (fix['Group'] == 'Group C')
-        index = []
-        for ar in range(len(array)):
-            if array[ar] == True:
-                index.append(ar)
-
-    for indx in range(len(index)):
-        corr_row = fix.loc[index[indx]]
-
-        probs, text, ReWrite_pred_df = prediction(corr_row['Home Team'], corr_row['Away Team'],ReWrite_pred_df)
-        print('Results \n', text)
-        conditions = [probs[0]> probs[1] and probs[0]> probs[2],
-               probs[1]> probs[2],
-               probs[2]>probs[1]]
-        values =[0,1,2]
-
-        Winner=np.select(conditions,values)
-        output_df=output_df.append({'Group':'Group C',
-                                'Home_team':corr_row['Home Team'],
-                                'Away_team':corr_row['Away Team'],
-                                'Home_win':probs[1],
-                                'Away_win':probs[2],
-                                'Draw':probs[0],
-                                'Winner':Winner},
-                                ignore_index = True)
-
-    #Group D
-    for i in range(len(fix)):
-        array = (fix['Group'] == 'Group D')
-        index = []
-        for ar in range(len(array)):
-            if array[ar] == True:
-                index.append(ar)
-
-    for indx in range(len(index)):
-        corr_row = fix.loc[index[indx]]
-
-        probs, text, ReWrite_pred_df = prediction(corr_row['Home Team'], corr_row['Away Team'],ReWrite_pred_df)
-        print('Results \n', text)
-        conditions = [probs[0]> probs[1] and probs[0]> probs[2],
-               probs[1]> probs[2],
-               probs[2]>probs[1]]
-        values =[0,1,2]
-
-        Winner=np.select(conditions,values)
-        output_df=output_df.append({'Group':'Group D',
-                                'Home_team':corr_row['Home Team'],
-                                'Away_team':corr_row['Away Team'],
-                                'Home_win':probs[1],
-                                'Away_win':probs[2],
-                                'Draw':probs[0],
-                                'Winner':Winner},
-                                ignore_index = True)
-
-    #Group E
-    for i in range(len(fix)):
-        array = (fix['Group'] == 'Group E')
-        index = []
-        for ar in range(len(array)):
-            if array[ar] == True:
-                index.append(ar)
-
-    for indx in range(len(index)):
-        corr_row = fix.loc[index[indx]]
-
-        probs, text, ReWrite_pred_df = prediction(corr_row['Home Team'], corr_row['Away Team'],ReWrite_pred_df)
-        print('Results \n', text)
-        conditions = [probs[0]> probs[1] and probs[0]> probs[2],
-               probs[1]> probs[2],
-               probs[2]>probs[1]]
-        values =[0,1,2]
-
-        Winner=np.select(conditions,values)
-        output_df=output_df.append({'Group':'Group E',
-                                'Home_team':corr_row['Home Team'],
-                                'Away_team':corr_row['Away Team'],
-                                'Home_win':probs[1],
-                                'Away_win':probs[2],
-                                'Draw':probs[0],
-                                'Winner':Winner},
-                                ignore_index = True)
-
-    #Group F
-    for i in range(len(fix)):
-        array = (fix['Group'] == 'Group F')
-        index = []
-        for ar in range(len(array)):
-            if array[ar] == True:
-                index.append(ar)
-
-    for indx in range(len(index)):
-        corr_row = fix.loc[index[indx]]
-
-        probs, text, ReWrite_pred_df = prediction(corr_row['Home Team'], corr_row['Away Team'],ReWrite_pred_df)
-        conditions = [probs[0]> probs[1] and probs[0]> probs[2],
-               probs[1]> probs[2],
-               probs[2]>probs[1]]
-        values =[0,1,2]
-
-        Winner=np.select(conditions,values)
-        output_df=output_df.append({'Group':'Group F',
-                                'Home_team':corr_row['Home Team'],
-                                'Away_team':corr_row['Away Team'],
-                                'Home_win':probs[1],
-                                'Away_win':probs[2],
-                                'Draw':probs[0],
-                                'Winner':Winner},
-                                ignore_index = True)
-
-    #Group G
-    for i in range(len(fix)):
-        array = (fix['Group'] == 'Group G')
-        index = []
-        for ar in range(len(array)):
-            if array[ar] == True:
-                index.append(ar)
-
-    for indx in range(len(index)):
-        corr_row = fix.loc[index[indx]]
-
-        probs, text, ReWrite_pred_df = prediction(corr_row['Home Team'], corr_row['Away Team'],ReWrite_pred_df)
-        print('Results \n', text)
-        conditions = [probs[0]> probs[1] and probs[0]> probs[2],
-               probs[1]> probs[2],
-               probs[2]>probs[1]]
-        values =[0,1,2]
-
-        Winner=np.select(conditions,values)
-        output_df=output_df.append({'Group':'Group G',
-                                'Home_team':corr_row['Home Team'],
-                                'Away_team':corr_row['Away Team'],
-                                'Home_win':probs[1],
-                                'Away_win':probs[2],
-                                'Draw':probs[0],
-                                'Winner':Winner},
-                                ignore_index = True)
-
-    #Group H
-    for i in range(len(fix)):
-        array = (fix['Group'] == 'Group H')
-        index = []
-        for ar in range(len(array)):
-            if array[ar] == True:
-                index.append(ar)
-
-    for indx in range(len(index)):
-        corr_row = fix.loc[index[indx]]
-
-        probs, text, ReWrite_pred_df = prediction(corr_row['Home Team'], corr_row['Away Team'],ReWrite_pred_df)
-        print('Results \n', text)
-        conditions = [probs[0]> probs[1] and probs[0]> probs[2],
-               probs[1]> probs[2],
-               probs[2]>probs[1]]
-        values =[0,1,2]
-
-        Winner=np.select(conditions,values)
-        output_df=output_df.append({'Group':'Group H',
-                                'Home_team':corr_row['Home Team'],
-                                'Away_team':corr_row['Away Team'],
-                                'Home_win':probs[1],
-                                'Away_win':probs[2],
-                                'Draw':probs[0],
-                                'Winner':Winner},
-                                ignore_index = True)
-
+    for group in groups:
+        output_df = groupPrediction(fix,group,ReWrite_pred_df,output_df)
 
 
     # Save to csv
@@ -403,6 +225,38 @@ def prediction_fixtures():
     #ReWrite_pred_df.to_csv(os.path.join(src_data.__path__[0],'ReWrite_pred_df.csv'),index=False,header=True)
     #print(ReWrite_pred_df.head())
     return output_df,ReWrite_pred_df
+
+
+def groupPrediction(fix,grp,ReWrite_pred_df,output_df):
+    grpVal = f'Group {grp}'
+
+    new_fix = fix[fix['Group'] == grpVal].reset_index()
+
+    for indx in range(len(new_fix)):
+        corr_row = new_fix.loc[indx]
+
+        probs, text, ReWrite_pred_df = prediction(corr_row['Home Team'], corr_row['Away Team'],ReWrite_pred_df)
+        # print('Results \n', text)
+        conditions = [probs[0] > probs[1] and probs[0] > probs[2],
+               probs[1] > probs[2],
+               probs[2] > probs[1]]
+        values =[0,1,2]
+
+        Winner=np.select(conditions,values)
+        output_df = output_df.append({'Group':grpVal,
+                                'Home_team':corr_row['Home Team'],
+                                'Away_team':corr_row['Away Team'],
+                                'Home_win':probs[1],
+                                'Away_win':probs[2],
+                                'Draw':probs[0],
+                                'Winner':Winner},
+                                ignore_index = True)
+
+    return output_df
+
+
+
+
 
 def appendToTeamId():
     '''This function appendds to the source data for the model and retrains and tunes the model'''
@@ -419,6 +273,11 @@ def appendToTeamId():
     output_df.truncate()
     return
 
+def run_Group_Stage():
+    for i in range(1,4):
+        prediction_fixtures(i)
+
 if __name__ == "__main__":
-    prediction_fixtures()
+    # prediction_fixtures()
+    run_Group_Stage()
     #callTeams('Iran')

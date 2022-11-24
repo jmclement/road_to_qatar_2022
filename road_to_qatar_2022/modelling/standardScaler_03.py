@@ -14,7 +14,7 @@ from sklearn.preprocessing import StandardScaler
 
 #Add data source for vinesh
 #import data as src_data
-from modelling.encoder_02 import prepareTrainingset
+from road_to_qatar_2022.modelling.encoder_02 import prepareTrainingset
 
 
 #Import utils for everyone

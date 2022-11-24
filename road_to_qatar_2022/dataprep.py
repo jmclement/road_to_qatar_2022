@@ -5,17 +5,18 @@ import numpy as np
 #from road_to_qatar_2022.utils import getTeamsRanking,cleanUpCountriesName,addingMissingData
 #import road_to_qatar_2022.data as src_data
 # for vinesh import utils path issues
-from utils import getTeamsRanking,cleanUpCountriesName,addingMissingData
-import data as src_data
+from road_to_qatar_2022.utils import getTeamsRanking,cleanUpCountriesName,addingMissingData
+import road_to_qatar_2022.data as src_data
 
 def loadData():
     '''Importing the datasets from the data folders'''
     # Importing Files
-    data_matches = pd.read_csv('../raw_data/data/FIFA World Cup/WorldCupMatches.csv')
-    data_players = pd.read_csv('../raw_data/data/FIFA World Cup/WorldCupPlayers.csv')
-    data_cups = pd.read_csv('../raw_data/data/FIFA World Cup/WorldCups.csv')
+    # os.path.join(src_data.__path__[0],'fixtures_2_perGrp.csv')
+    data_matches = pd.read_csv(os.path.join(src_data.__path__[0],'raw_data','data','FIFA World Cup','WorldCupMatches.csv'))
+    data_players = pd.read_csv(os.path.join(src_data.__path__[0],'raw_data','data','FIFA World Cup','WorldCupPlayers.csv'))
+    data_cups = pd.read_csv(os.path.join(src_data.__path__[0],'raw_data','data','FIFA World Cup','WorldCups.csv'))
     # Adding international Matches for Qatar first participation in the World Cup 2022 as Host country
-    international_matches = pd.read_csv('../raw_data/data/International football results from 1872 to 2022/results.csv')
+    international_matches = pd.read_csv(os.path.join(src_data.__path__[0],'raw_data','data','International football results from 1872 to 2022','results.csv'))
 
     return (data_matches,data_players,data_cups,international_matches)
 

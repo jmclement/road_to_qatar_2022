@@ -4,5 +4,7 @@
 .DS_Store
 raw_data/
 *.csv
+!road_to_qatar_2022/data/**/*
 **/__pycache__/
 .env
+Untitled.ipynb

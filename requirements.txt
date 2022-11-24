@@ -8,6 +8,18 @@ wheel>=0.29
 numpy
 pandas
 scikit-learn
+# tensorflow; sys_platform != 'darwin'
+# tensorflow-macos; sys_platform == 'darwin'
+# protobuf; sys_platform == 'darwin'
+# wandb; sys_platform == 'darwin'
+
+tensorflow-macos<=2.8.0; sys_platform == 'darwin' and 'ARM' in platform_version
+protobuf<=3.20.1; sys_platform == 'darwin' and 'ARM' in platform_version
+tensorflow==2.9.1; sys_platform == 'darwin' and 'ARM' not in platform_version
+# tensorflow==2.9.1; sys_platform != 'darwin'
+tensorflow==2.11.0; sys_platform != 'darwin' and sys_platform != 'windows'
+xgboost
+seaborn
 
 # tests/linter
 black

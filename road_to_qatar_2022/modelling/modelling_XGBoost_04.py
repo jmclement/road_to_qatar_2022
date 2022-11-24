@@ -24,8 +24,8 @@ from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.model_selection import GridSearchCV
 #Add data source for vinesh
 import data as src_data
-from modelling.encoder_02 import prepareTrainingset
-from modelling.standardScaler_03 import standardScaler
+from road_to_qatar_2022.modelling.encoder_02 import prepareTrainingset
+from road_to_qatar_2022.modelling.standardScaler_03 import standardScaler
 # for other add the prefix folder road_t0....
 #from road_to_qatar_2022.modelling.standardScaler_03 import standardScaler
 #from road_to_qatar_2022.modelling.encoder_02 import prepareTrainingset
