@@ -124,12 +124,12 @@ def startup_event():
         # print(model_output)
         print(f"In loop {i}")
         model_df, rewrite_df = main_local.prediction_fixtures(i)
-        # model_output = model_output.append(model_df,ignore_index=True)
+        model_output = model_output.append(model_df,ignore_index=True)
 
     print(f'{"Model DF":*^20}')
     print(model_df)
-    # print(f'{"Model Output":.^20}')
-    # print(model_output)
+    print(f'{"Model Output":.^20}')
+    print(model_output)
 
     print(f'{"Finishing startup":-^25}')
 
