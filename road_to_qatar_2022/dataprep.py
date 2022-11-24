@@ -66,9 +66,13 @@ def prepInternational():
     international_shootouts_df = pd.read_csv('raw_data/international-football-results-from-1872-to-2017/shootouts.csv')
 
     # Merging the content of the 2 dataframes into a merged df
-    international_merge_df = international_results_df.merge(international_shootouts_df,left_on=['date','home_team','away_team'],right_on=['date','home_team','away_team'])
+    ## Start -- lm231122
+    #international_merge_df = international_results_df.merge(international_shootouts_df,left_on=['date','home_team','away_team'],right_on=['date','home_team','away_team'])
+    international_merge_df = international_results_df
+    ## End --lm231122
 
     # Renaming the columns
+    ## Start -- lm231122
     international_merge_df.rename(columns={
         "Date": "date",
         "home_team": "home_team",
@@ -78,9 +82,10 @@ def prepInternational():
         "tournament": "tournament",
         "city":"city",
         "country": "country",
-        "neutral": "neutral",
-        "winner": "win_conditions"
+        "neutral": "neutral"
+        #"winner": "win_conditions"
     }, inplace=True)
+    ## End --lm231122
 
     # Filtering the dataframe to have only the participating countries
     # Creating a list of all teams playing football worlcup:
@@ -101,17 +106,32 @@ def prepInternational():
     A_list = list(team_name.keys())
 
     international_merge_df = cleanUpCountriesName(international_merge_df)
-    international_merge_df = international_merge_df[international_merge_df['home_team'].isin(A_list) |
-                         international_merge_df['away_team'].isin(A_list) ]
+    ## Start --lm231122
+    #international_merge_df = international_merge_df[international_merge_df['home_team'].isin(A_list) |
+     #                    international_merge_df['away_team'].isin(A_list) ]
+
+
+    international_merge_df= international_merge_df[(international_merge_df['home_team'].isin(A_list) & international_merge_df['away_team'].isin(A_list)) |(international_merge_df['home_team'].isin(A_list) & international_merge_df['away_team'].isin(A_list))]
+    ## End --lm231122
+    international_merge_df = international_merge_df [['date','home_team','home_score','away_score','away_team','tournament','city','country','neutral']]
+    international_merge_df.drop(columns=['tournament','city','country','neutral'],inplace=True)
 
     # Final DF filtered to drop columns not needed
 
-    international_merge_df=international_merge_df[['date','home_team','away_team','home_score','away_score','win_conditions']]
+    #international_merge_df=international_merge_df[['date','home_team','away_team','home_score','away_score','win_conditions']]
+    #international_merge_df=international_merge_df[['date','home_team','away_team','home_score','away_score']]
 
     #final_international_merge_df = cleanUpCountriesName(final_international_merge_df)
+    international_merge_df = cleanUpCountriesName(international_merge_df)
+    ## Start --lm231122
+    international_merge_df.rename(columns = {'date':'Date','home_team':'Home Team Name','home_score':'Home Team Goals','away_score':'Away Team Goals','away_team':'Away Team Name'},inplace=True)
+    ## End --lm231122
 
-    print(data_matches_new.info())
+    #print(data_matches_new.head())
+    #print(international_merge_df.head())
+    ## Start --lm231122
     return (international_merge_df,data_matches_new)
+    ## End --lm231122
 def match_winner(df:pd.DataFrame):
     conditions = [
     ((df['Home Team Goals'].astype(int)) == (df['Away Team Goals'].astype(int))),
@@ -129,7 +149,9 @@ def prepWorldCupDF():
     files. Additionally renaming/processing the information.
     '''
     # load the cleaned data world cup matches and international matches data from
+    ## Start --lm231122
     international_merge_df,data_matches_new = prepInternational()
+    ## End --lm231122
 
     # Load the three files from downloaded csv
 
@@ -150,38 +172,42 @@ def prepWorldCupDF():
 
     # Filter down to get unique World Cup matches dates
     uniqueWorldCupDates = [str(i)[:10] for i in worldCupDates]
-
+    ## Start --lm231122
     # Call to prepInternational to get the Internation matches dataframe
     #finalInternational_df = prepInternational()
 
     # From the international matches filter to obtain only matches that were not
     # worldcup games and settings appropriate date format
-    nonWorldCupInternationalMatches = international_merge_df[~international_merge_df['date'].isin(uniqueWorldCupDates)]
-    nonWorldCupInternationalMatches['date'] = pd.to_datetime(nonWorldCupInternationalMatches['date'])
+    #nonWorldCupInternationalMatches = international_merge_df[~international_merge_df['date'].isin(uniqueWorldCupDates)]
+    #nonWorldCupInternationalMatches['date'] = pd.to_datetime(nonWorldCupInternationalMatches['date'])
 
     # Rename the columns for the international matches so that they align for the merge with FIFA world cup matches(data_matches_to_use)
-    nonWorldCupInternationalMatches.rename(columns = {'date':'Date','home_team':'Home Team Name','home_score':'Home Team Goals','away_score':'Away Team Goals','away_team':'Away Team Name','win_conditions':'Win conditions'},inplace=True)
+    #nonWorldCupInternationalMatches.rename(columns = {'date':'Date','home_team':'Home Team Name','home_score':'Home Team Goals','away_score':'Away Team Goals','away_team':'Away Team Name','win_conditions':'Win conditions'},inplace=True)
 
     # Call the function to convert the scores columns to a winners column for prediction purposes (W,L,D)
-    nonWorldCupInternationalMatches = match_winner(nonWorldCupInternationalMatches)
-
+    #nonWorldCupInternationalMatches = match_winner(nonWorldCupInternationalMatches)
+    ## End --231122
     # Drop unwanted data from data_new_matches
     data_matches_to_use = data_matches_new.drop(['Year','Datetime', 'Stage', 'Stadium', 'City',
                                                 'Attendance', 'Half-time Home Goals', 'Half-time Away Goals',
                                                 'Referee', 'Assistant 1', 'Assistant 2',
                                                 'RoundID', 'MatchID', 'Home Team Initials', 'Away Team Initials'], 1)
-    nonWorldCupInternationalMatches.rename(columns = {'Win conditions':'Winner'},inplace = True)
+    #nonWorldCupInternationalMatches.rename(columns = {'Win conditions':'Winner'},inplace = True)
 
     # Rename the columns for the world cup matches so that they align for the merge with international matches(nonWorldCupInternationalMatches)
     data_matches_to_use.rename(columns = {'Win conditions':'Winner'},inplace = True)
     data_matches_to_use = data_matches_to_use[['Date','Home Team Name','Home Team Goals','Away Team Goals','Away Team Name','Winner']]
 
     # Merging World Cup matches with Non World Cup Internation matches with an append
+    ## Start --lm231122
     #mergedWorlCupMatches_df = data_matches_to_use.merge(nonWorldCupInternationalMatches, left_on='Date', right_on='date', how='outer')
 
-    mergedWorlCupMatches_df = data_matches_to_use.append(nonWorldCupInternationalMatches,ignore_index = True)
-
-
+    #mergedWorlCupMatches_df = data_matches_to_use.append(nonWorldCupInternationalMatches,ignore_index = True)
+    mergedWorlCupMatches_df = data_matches_to_use.append(international_merge_df,ignore_index = True)
+    mergedWorlCupMatches_df['Date'] = (pd.to_datetime(mergedWorlCupMatches_df['Date']))
+    mergedWorlCupMatches_df['Date'] = mergedWorlCupMatches_df['Date'].dt.date
+    mergedWorlCupMatches_df['Date'] = pd.to_datetime(mergedWorlCupMatches_df['Date'])
+    ## End --2321122
     # Filter WorldCup matches
     #filtered_WorldCupMatches_df = mergedWorlCupMatches_df[mergedWorlCupMatches_df[[
         #'Date',
@@ -214,8 +240,12 @@ def prepWorldCupDF():
     #mergedWorldCupMatches_df_1 = pd.concat(frames)
 
     #print(mergedWorldCupMatches_df_1.shape)
-    #print(mergedWorlCupMatches_df.info())
-    return mergedWorlCupMatches_df
+    #print(mergedWorlCupMatches_df[mergedWorlCupMatches_df['Winner']==0])
+    #print(data_matches_to_use.head())
+    #print(international_merge_df.head())
+    ## Start --lm231122
+    return mergedWorlCupMatches_df,data_matches_to_use
+    ## End --231122
 
 
 
@@ -226,8 +256,9 @@ def prepDataEng():
     '''
 
     # Get world cup dataframe from prepWorldCupDF
-    worldCup_DF = prepWorldCupDF()
-
+    ## Start --231122
+    worldCup_DF = prepWorldCupDF()[0]
+    ## End--231122
     # Check if teamsranking data is present, else download it
     if not os.path.exists(os.path.join(src_data.__path__[0],'teamsranking.csv')):
         getTeamsRanking()
@@ -300,3 +331,5 @@ def countChampions():
 
 if __name__ == '__main__':
     countChampions()
+    #prepInternational()
+    #prepWorldCupDF()

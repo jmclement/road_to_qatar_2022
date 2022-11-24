@@ -407,18 +407,22 @@ def prediction_fixtures():
 def appendToTeamId():
     '''This function appendds to the source data for the model and retrains and tunes the model'''
     # read the last predicted matches
-    output_df,ReWrite_pred_df=prediction_fixtures
+    output_df,ReWrite_pred_df=prediction_fixtures()
     #ReWrite_pred_df = pd.read_csv('data/ReWrite_pred_df.csv')
     # read the source data for the model training
     Team_id=data_01.replace_name()
     # append the predicted to the source, here i used a new df, temporarily for testing and validation, until its validated, the we can simply append to the team_id
-    Team_id_updated = Team_id.append(ReWrite_pred_df,ignore_index = True)
+    Team_id = Team_id.append(ReWrite_pred_df,ignore_index = True)
     # calling the module to load the model and tuning the model
     reTrainTuneModel= tune_model_with_params_06.importModelParams()
-    ReWrite_pred_df.truncate()
-    output_df.truncate()
-    return
+    ReWrite_pred_df.truncate(before=-1, after=-1)
+    output_df.truncate(before=-1, after=-1)
+    print(ReWrite_pred_df.head())
+    print(output_df.head())
+    print(Team_id.head())
+    #print(Team_id_updated.head())
+    return ReWrite_pred_df,output_df,Team_id,Team_id
 
 if __name__ == "__main__":
-    prediction_fixtures()
+    appendToTeamId()
     #callTeams('Iran')
