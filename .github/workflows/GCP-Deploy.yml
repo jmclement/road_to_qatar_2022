@@ -54,8 +54,8 @@ jobs:
 
         - name: Start Model
           id: runModel
-          # uses: fjogeleit/http-request-action@v1
-          # with:
-          #   url: ${{ steps.deployDocker.outputs. }}
-          #   method: 'GET'
-          run: echo "${{ steps.deployDocker.outputs.DEP_OUT }}"
+          uses: fjogeleit/http-request-action@v1
+          with:
+            url: 'https://qatar-2022-api-${{$BRANCH_NAME}}-3axvvmvj6a-ue.a.run.app'
+            method: 'GET'
+          # run: echo "${{ steps.deployDocker.outputs.DEP_OUT }}"
