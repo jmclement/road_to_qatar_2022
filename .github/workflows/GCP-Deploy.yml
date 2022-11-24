@@ -48,7 +48,7 @@ jobs:
 
         - name: Deploy Docker image
           id: deployDocker
-          run: gcloud run deploy ${{ secrets.GCP_APP_NAME }}-$BRANCH_NAME --image $IMAGE_NAME --region us-east1 --platform managed --allow-unauthenticated --memory '2Gi' --cpu=2 --min-instances=1 --no-cpu-throttling --timeout=960
+          run: gcloud run deploy ${{ secrets.GCP_APP_NAME }}-$BRANCH_NAME --image $IMAGE_NAME --region us-east1 --platform managed --allow-unauthenticated --memory '2Gi' --cpu=2 --min-instances=1 --no-cpu-throttling --timeout=960 >> $GITHUB_OUTPUT
 
         - name: Start Model
           id: runModel
@@ -56,4 +56,4 @@ jobs:
           # with:
           #   url: ${{ steps.deployDocker.outputs. }}
           #   method: 'GET'
-          run: echo ${{ steps.deployDocker.outputs }}
+          run: ${{ steps.deployDocker.outputs }}
